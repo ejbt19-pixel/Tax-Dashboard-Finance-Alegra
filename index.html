@@ -106,7 +106,16 @@ header {
 }
 .tab.active { color: var(--primary); border-bottom-color: var(--primary); }
 .tab:hover { background: var(--gray-light); }
-.tier-icon { font-size: 10px; margin-left: 4px; }
+.tier-icon { font-size: 10px; margin-left: 4px; pointer-events: none; }
+.country-only-co { display: block; }
+body[data-country]:not([data-country="CO"]):not([data-country="all"]) .country-only-co { display: none; }
+body[data-country="all"] .country-only-co { display: none; }
+.country-placeholder { display: none; }
+body[data-country]:not([data-country="CO"]):not([data-country="all"]) .country-placeholder { display: block; }
+.country-placeholder.consolidated-view { display: none; }
+body[data-country="all"] .country-placeholder.consolidated-view { display: block; }
+.disabled-pill { opacity: 0.5; cursor: not-allowed; }
+@media print { .mockup-banner, .filter-applied-overlay, .filter-bar { display: none !important; } }
 main { padding: 24px; max-width: 1600px; margin: 0 auto; }
 .page { display: none; }
 .page.active { display: block; animation: fadeIn 0.2s ease-in; }
@@ -326,15 +335,15 @@ body[data-country]:not([data-country="all"]) .country-cell.country-cell-match { 
   </div>
 </div>
 
-<nav class="tabs">
-  <div class="tab active" onclick="showTab(event, 'cockpit')">Cockpit Ejecutivo <span class="tier-icon tier-public">●</span></div>
-  <div class="tab" onclick="showTab(event, 'pais')">Vista por País <span class="tier-icon tier-public">●</span></div>
-  <div class="tab" onclick="showTab(event, 'calendario')">Calendario y Cumplimiento <span class="tier-icon tier-restricted">●</span></div>
-  <div class="tab" onclick="showTab(event, 'saldos')">Saldos a Favor <span class="tier-icon tier-restricted">●</span></div>
-  <div class="tab" onclick="showTab(event, 'nol')">NOL Tracker <span class="tier-icon tier-restricted">●</span></div>
-  <div class="tab" onclick="showTab(event, 'contingencias')">Riesgos y Contingencias <span class="tier-icon tier-confidential">●</span></div>
-  <div class="tab" onclick="showTab(event, 'cashflow')">Tax Cash Flow <span class="tier-icon tier-restricted">●</span></div>
-  <div class="tab" onclick="showTab(event, 'renta')">Tax Return / Renta <span class="tier-icon tier-restricted">●</span></div>
+<nav class="tabs" role="tablist">
+  <div class="tab active" data-tab-id="cockpit" role="tab" tabindex="0" onclick="showTab(event, 'cockpit')">Cockpit Ejecutivo <span class="tier-icon tier-public">●</span></div>
+  <div class="tab" data-tab-id="pais" role="tab" tabindex="0" onclick="showTab(event, 'pais')">Vista por País <span class="tier-icon tier-public">●</span></div>
+  <div class="tab" data-tab-id="calendario" role="tab" tabindex="0" onclick="showTab(event, 'calendario')">Calendario y Cumplimiento <span class="tier-icon tier-restricted">●</span></div>
+  <div class="tab" data-tab-id="saldos" role="tab" tabindex="0" onclick="showTab(event, 'saldos')">Saldos a Favor <span class="tier-icon tier-restricted">●</span></div>
+  <div class="tab" data-tab-id="nol" role="tab" tabindex="0" onclick="showTab(event, 'nol')">NOL Tracker <span class="tier-icon tier-restricted">●</span></div>
+  <div class="tab" data-tab-id="contingencias" role="tab" tabindex="0" onclick="showTab(event, 'contingencias')">Riesgos y Contingencias <span class="tier-icon tier-confidential">●</span></div>
+  <div class="tab" data-tab-id="cashflow" role="tab" tabindex="0" onclick="showTab(event, 'cashflow')">Tax Cash Flow <span class="tier-icon tier-restricted">●</span></div>
+  <div class="tab" data-tab-id="renta" role="tab" tabindex="0" onclick="showTab(event, 'renta')">Tax Return / Renta <span class="tier-icon tier-restricted">●</span></div>
 </nav>
 
 <main>
@@ -460,13 +469,13 @@ body[data-country]:not([data-country="all"]) .country-cell.country-cell-match { 
     <div class="card" style="background: linear-gradient(135deg, var(--primary-light), white);">
       <div class="row-flex" style="justify-content: space-between;">
         <div>
-          <div class="row-flex"><span class="country-flag">🇨🇴</span><h2 style="font-size: 20px; font-weight: 500;">Colombia — Vista consolidada</h2></div>
-          <div class="card-subtitle" style="margin-top: 6px;">3 sociedades activas: Alegra Holdings SAS, Soluciones Alegra SAS, Alero Global SAS</div>
+          <div class="row-flex"><span class="country-flag" id="pais-flag">🇨🇴</span><h2 style="font-size: 20px; font-weight: 500;" id="pais-name">Colombia — Vista consolidada</h2></div>
+          <div class="card-subtitle" style="margin-top: 6px;" id="pais-sociedades">3 sociedades activas: Alegra Holdings SAS, Soluciones Alegra SAS, Alero Global SAS</div>
         </div>
         <div style="text-align: right;">
           <div class="card-subtitle">Tarifa nominal renta</div>
-          <div style="font-size: 24px; font-weight: 500;">35%</div>
-          <div class="card-subtitle">+ sobretasa cuando aplica · Art. 240 ET</div>
+          <div style="font-size: 24px; font-weight: 500;" id="pais-rate">35%</div>
+          <div class="card-subtitle" id="pais-rate-context">+ sobretasa cuando aplica · Art. 240 ET</div>
         </div>
       </div>
     </div>
@@ -475,31 +484,58 @@ body[data-country]:not([data-country="all"]) .country-cell.country-cell-match { 
   <div class="grid grid-4">
     <div class="card">
       <div class="card-title">ETR país (operativas)</div>
-      <div class="kpi-value">26.4<span class="kpi-unit">%</span></div>
+      <div class="kpi-value"><span id="pais-etr">26.4</span><span class="kpi-unit">%</span></div>
       <div class="kpi-comparison">
-        <span class="kpi-prev-label">2025:</span><span class="kpi-prev">24.9%</span>
-        <span class="kpi-delta delta-up-bad">▲ +1.5 pp</span>
+        <span class="kpi-prev-label">2025:</span><span class="kpi-prev"><span id="pais-etr-prev">24.9</span>%</span>
+        <span class="kpi-delta delta-up-bad" id="pais-etr-delta">▲ +1.5 pp</span>
       </div>
     </div>
     <div class="card">
       <div class="card-title">Pagados YTD</div>
-      <div class="kpi-value">86.5<span class="kpi-unit">K USD</span></div>
+      <div class="kpi-value"><span id="pais-paid">86.5</span><span class="kpi-unit">K USD</span></div>
       <div class="kpi-comparison">
-        <span class="kpi-prev-label">2025:</span><span class="kpi-prev">82.1K</span>
-        <span class="kpi-delta delta-up-bad">▲ +5.4%</span>
+        <span class="kpi-prev-label">2025:</span><span class="kpi-prev"><span id="pais-paid-prev">82.1</span>K</span>
+        <span class="kpi-delta delta-up-bad" id="pais-paid-delta">▲ +5.4%</span>
       </div>
     </div>
     <div class="card">
       <div class="card-title">Saldos a Favor</div>
-      <div class="kpi-value">3.0<span class="kpi-unit">K USD</span></div>
-      <div class="card-subtitle"><span class="badge badge-orange">⚠ 1 caso a 75% del plazo legal</span></div>
+      <div class="kpi-value"><span id="pais-saldos">3.0</span><span class="kpi-unit">K USD</span></div>
+      <div class="card-subtitle" id="pais-saldos-note"><span class="badge badge-orange">⚠ 1 caso a 75% del plazo legal</span></div>
     </div>
     <div class="card">
       <div class="card-title">Cumplimiento YTD</div>
-      <div class="kpi-value">95<span class="kpi-unit">%</span></div>
-      <div class="card-subtitle">2 obligaciones próximas</div>
+      <div class="kpi-value"><span id="pais-compliance">95</span><span class="kpi-unit">%</span></div>
+      <div class="card-subtitle" id="pais-compliance-note">2 obligaciones próximas</div>
     </div>
   </div>
+
+  <!-- Placeholder cuando se selecciona un país sin detalle cargado -->
+  <div class="country-placeholder" id="pais-placeholder-other" style="display: none;">
+    <div class="card" style="background: var(--yellow-light); border: 1px solid var(--yellow); padding: 32px; text-align: center;">
+      <div style="font-size: 32px; margin-bottom: 12px;" id="pais-placeholder-flag">🌎</div>
+      <h3 style="font-size: 18px; font-weight: 500; margin-bottom: 8px;">Detalle <span id="pais-placeholder-name">país</span> en construcción</h3>
+      <p style="color: var(--text-secondary); max-width: 600px; margin: 0 auto;" id="pais-placeholder-msg">
+        El estado de cuenta detallado para este país seguirá la misma estructura mostrada para Colombia (T-Account por impuesto, evolución mensual, depuración fiscal y desglose de impuestos sub-nacionales). Carga estimada: Sprint 4–5 con datos del cierre 2025.
+      </p>
+      <div style="margin-top: 20px;">
+        <button class="btn" onclick="document.getElementById('filter-country').value = 'CO'; document.getElementById('filter-country').dispatchEvent(new Event('change'));">Ver el ejemplo en Colombia →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Placeholder cuando "Todos" — vista consolidada -->
+  <div class="country-placeholder consolidated-view" id="pais-placeholder-all" style="display: none;">
+    <div class="card" style="background: var(--primary-light); padding: 32px; text-align: center;">
+      <div style="font-size: 32px; margin-bottom: 12px;">🌎</div>
+      <h3 style="font-size: 18px; font-weight: 500; margin-bottom: 8px;">Vista consolidada del grupo</h3>
+      <p style="color: var(--text-secondary); max-width: 600px; margin: 0 auto;">
+        Los KPIs arriba muestran el consolidado de las 13 sociedades. Para ver el estado de cuenta detallado por tipo de impuesto, calendario municipal y desglose de impuestos sub-nacionales, selecciona un país específico en el filtro superior.
+      </p>
+    </div>
+  </div>
+
+  <div class="country-only-co">
 
   <div class="section-title">Estado de cuenta por tipo de impuesto</div>
 
@@ -639,6 +675,8 @@ body[data-country]:not([data-country="all"]) .country-cell.country-cell-match { 
     <div class="note">El calendario municipal es independiente del calendario DIAN. Cada municipio publica su propio decreto anual de plazos. La hoja `Reglas_Calendario_CO_Municipal` mantiene esto separado.</div>
   </div>
 
+  </div><!-- /country-only-co -->
+
   <div class="section-title">🌎 Impuestos sub-nacionales — qué se ve al cambiar de país</div>
 
   <div class="card">
@@ -648,77 +686,77 @@ body[data-country]:not([data-country="all"]) .country-cell.country-cell-match { 
         <tr><th>País</th><th>Tipo de jurisdicción</th><th>Impuestos sub-nacionales aplicables al grupo</th><th>Variabilidad</th><th>Periodicidad</th><th>Sociedades expuestas</th></tr>
       </thead>
       <tbody>
-        <tr>
+        <tr data-country="CO">
           <td>🇨🇴 Colombia</td><td>Municipal</td>
           <td><strong>ICA</strong> (Industria y Comercio) · <strong>Avisos y Tableros</strong> · <strong>Predial</strong> · <strong>Estampillas</strong></td>
           <td>Tarifa varía por municipio y código de actividad económica (CIIU)</td>
           <td>Bimestral / Anual</td>
           <td>Soluciones Alegra SAS, Alero Global SAS</td>
         </tr>
-        <tr>
+        <tr data-country="MX">
           <td>🇲🇽 México</td><td>Estatal + Municipal</td>
           <td><strong>ISN</strong> (Impuesto sobre Nómina) · <strong>Predial</strong> · <strong>ISAI</strong> (adquisición inmuebles)</td>
           <td>ISN entre 1% y 3% según estado</td>
           <td>Mensual / Anual</td>
           <td>Alegra Contabilidad SA de CV</td>
         </tr>
-        <tr>
+        <tr data-country="AR">
           <td>🇦🇷 Argentina</td><td>Provincial + Municipal</td>
           <td><strong>IIBB</strong> (Ingresos Brutos) · <strong>Sellos</strong> · <strong>Tasa de Industria y Comercio Municipal</strong></td>
           <td>IIBB varía 1.5%–6% según provincia y actividad</td>
           <td>Mensual</td>
           <td>Alanube SAU</td>
         </tr>
-        <tr>
+        <tr data-country="CR">
           <td>🇨🇷 Costa Rica</td><td>Cantonal</td>
           <td><strong>Patentes municipales</strong> · <strong>Bienes inmuebles</strong></td>
           <td>Patente fija por cantón según facturación</td>
           <td>Trimestral / Anual</td>
           <td>Alanube SRL (CR)</td>
         </tr>
-        <tr>
+        <tr data-country="PA">
           <td>🇵🇦 Panamá</td><td>Municipal</td>
           <td><strong>Aviso de Operación</strong> · <strong>Impuesto sobre inmuebles</strong> · <strong>Letrero comercial</strong></td>
           <td>Aviso de Operación 2% utilidad neta (mín. USD 100)</td>
           <td>Anual</td>
           <td>Alanube SA</td>
         </tr>
-        <tr>
+        <tr data-country="RD">
           <td>🇩🇴 R. Dominicana</td><td>Municipal</td>
           <td><strong>Patente municipal</strong> · <strong>Arbitrios municipales</strong></td>
           <td>Patente según facturación + nómina</td>
           <td>Anual</td>
           <td>Alanube SRL (RD)</td>
         </tr>
-        <tr>
+        <tr data-country="PE">
           <td>🇵🇪 Perú</td><td>Distrital</td>
           <td><strong>Predial</strong> · <strong>Arbitrios</strong> (limpieza, parques, serenazgo) · <strong>Alcabala</strong></td>
           <td>Predial progresivo · Arbitrios fijos por distrito</td>
           <td>Trimestral / Anual</td>
           <td>Alanube SAC</td>
         </tr>
-        <tr>
+        <tr data-country="ES">
           <td>🇪🇸 España</td><td>Municipal + Autonómico</td>
           <td><strong>IBI</strong> (Bienes Inmuebles) · <strong>IAE</strong> (Actividades Económicas) · <strong>ITP</strong> autonómico</td>
           <td>IBI 0.4%–1.1% valor catastral · IAE solo si vol. > €1M</td>
           <td>Anual</td>
           <td>Alegra Soluciones SL</td>
         </tr>
-        <tr>
+        <tr data-country="US">
           <td>🇺🇸 USA</td><td>Estatal + Local</td>
           <td><strong>State income tax</strong> · <strong>Local sales tax</strong> · <strong>Property tax</strong> · <strong>Local payroll</strong></td>
           <td>Varía radicalmente por estado y condado</td>
           <td>Mensual / Trimestral / Anual</td>
           <td>Alegra USA LLC</td>
         </tr>
-        <tr>
+        <tr data-country="CA">
           <td>🇨🇦 Canadá</td><td>Provincial + Municipal</td>
           <td><strong>Provincial income tax</strong> · <strong>Provincial sales tax (PST/QST)</strong> · <strong>Municipal property tax</strong></td>
           <td>PST varía 0%–9.975% por provincia (Quebec QST 9.975%)</td>
           <td>Mensual / Trimestral</td>
           <td>Alegra CAN LP</td>
         </tr>
-        <tr>
+        <tr data-country="UK">
           <td>🇬🇧 UK</td><td>Local</td>
           <td><strong>Business Rates</strong> (similar a IBI sobre inmuebles comerciales) · <strong>Council tax</strong></td>
           <td>Multiplicador uniforme nacional × valor catastral</td>
@@ -773,16 +811,16 @@ body[data-country]:not([data-country="all"]) .country-cell.country-cell-match { 
           <tr><th>Estado</th><th>País</th><th>Sociedad</th><th>Obligación</th><th>Periodo</th><th>Vence</th><th class="num">Días</th><th>Responsable</th></tr>
         </thead>
         <tbody>
-          <tr data-country="RD"><td><span class="badge badge-orange"><span class="semaforo s-orange"></span>Crítico</span></td><td>🇩🇴 RD</td><td>Alanube SRL</td><td>ITBIS abril</td><td>2026-04</td><td>15-may-2026</td><td class="num">9</td><td>Contab. RD</td></tr>
-          <tr data-country="CA"><td><span class="badge badge-orange"><span class="semaforo s-orange"></span>Crítico</span></td><td>🇨🇦 CAN</td><td>Alegra CAN LP</td><td>GST/HST Q1</td><td>Q1-2026</td><td>15-may-2026</td><td class="num">9</td><td>D. Franco</td></tr>
-          <tr data-country="MX"><td><span class="badge badge-yellow"><span class="semaforo s-yellow"></span>Próximo</span></td><td>🇲🇽 MX</td><td>Alegra Contabilidad</td><td>DIOT abril</td><td>2026-04</td><td>17-may-2026</td><td class="num">11</td><td>Contab. MX</td></tr>
-          <tr data-country="ES"><td><span class="badge badge-yellow"><span class="semaforo s-yellow"></span>Próximo</span></td><td>🇪🇸 ES</td><td>Alegra Soluciones SL</td><td>Modelo 303 — IVA T1</td><td>2026-T1</td><td>20-may-2026</td><td class="num">14</td><td>Contab. ES</td></tr>
-          <tr data-country="AR"><td><span class="badge badge-yellow"><span class="semaforo s-yellow"></span>Próximo</span></td><td>🇦🇷 AR</td><td>Alanube SAU</td><td>Anticipo Ganancias mayo</td><td>2026-05</td><td>22-may-2026</td><td class="num">16</td><td>Contador AR</td></tr>
-          <tr data-country="CO"><td><span class="badge badge-green"><span class="semaforo s-green"></span>En plazo</span></td><td>🇨🇴 CO</td><td>Soluciones Alegra SAS</td><td>IVA bimestre 2</td><td>2026-B2</td><td>02-jun-2026</td><td class="num">27</td><td>D. Franco</td></tr>
-          <tr data-country="CO"><td><span class="badge badge-green"><span class="semaforo s-green"></span>En plazo</span></td><td>🇨🇴 CO</td><td>Soluciones Alegra SAS</td><td>Retención IVA bimestre 2</td><td>2026-B2</td><td>02-jun-2026</td><td class="num">27</td><td>D. Franco</td></tr>
-          <tr data-country="MX"><td><span class="badge badge-green"><span class="semaforo s-green"></span>En plazo</span></td><td>🇲🇽 MX</td><td>Alegra Contabilidad</td><td>ISR mensual mayo</td><td>2026-05</td><td>17-jun-2026</td><td class="num">42</td><td>Contab. MX</td></tr>
-          <tr data-country="CR"><td><span class="badge badge-green"><span class="semaforo s-green"></span>En plazo</span></td><td>🇨🇷 CR</td><td>Alanube SRL</td><td>D-104 IVA mayo</td><td>2026-05</td><td>15-jun-2026</td><td class="num">40</td><td>Contab. CR</td></tr>
-          <tr data-country="PE"><td><span class="badge badge-green"><span class="semaforo s-green"></span>En plazo</span></td><td>🇵🇪 PE</td><td>Alanube SAC</td><td>PDT 621 mayo</td><td>2026-05</td><td>20-jun-2026</td><td class="num">45</td><td>Contab. PE</td></tr>
+          <tr data-country="RD" data-naturaleza="indirect" data-sociedad-tipo="operating"><td><span class="badge badge-orange"><span class="semaforo s-orange"></span>Crítico</span></td><td>🇩🇴 RD</td><td>Alanube SRL</td><td>ITBIS abril</td><td>2026-04</td><td>15-may-2026</td><td class="num">9</td><td>Contab. RD</td></tr>
+          <tr data-country="CA" data-naturaleza="indirect" data-sociedad-tipo="operating"><td><span class="badge badge-orange"><span class="semaforo s-orange"></span>Crítico</span></td><td>🇨🇦 CAN</td><td>Alegra CAN LP</td><td>GST/HST Q1</td><td>Q1-2026</td><td>15-may-2026</td><td class="num">9</td><td>D. Franco</td></tr>
+          <tr data-country="MX" data-naturaleza="direct" data-sociedad-tipo="operating"><td><span class="badge badge-yellow"><span class="semaforo s-yellow"></span>Próximo</span></td><td>🇲🇽 MX</td><td>Alegra Contabilidad</td><td>DIOT abril</td><td>2026-04</td><td>17-may-2026</td><td class="num">11</td><td>Contab. MX</td></tr>
+          <tr data-country="ES" data-naturaleza="indirect" data-sociedad-tipo="operating"><td><span class="badge badge-yellow"><span class="semaforo s-yellow"></span>Próximo</span></td><td>🇪🇸 ES</td><td>Alegra Soluciones SL</td><td>Modelo 303 — IVA T1</td><td>2026-T1</td><td>20-may-2026</td><td class="num">14</td><td>Contab. ES</td></tr>
+          <tr data-country="AR" data-naturaleza="direct" data-sociedad-tipo="operating"><td><span class="badge badge-yellow"><span class="semaforo s-yellow"></span>Próximo</span></td><td>🇦🇷 AR</td><td>Alanube SAU</td><td>Anticipo Ganancias mayo</td><td>2026-05</td><td>22-may-2026</td><td class="num">16</td><td>Contador AR</td></tr>
+          <tr data-country="CO" data-naturaleza="indirect" data-sociedad-tipo="operating"><td><span class="badge badge-green"><span class="semaforo s-green"></span>En plazo</span></td><td>🇨🇴 CO</td><td>Soluciones Alegra SAS</td><td>IVA bimestre 2</td><td>2026-B2</td><td>02-jun-2026</td><td class="num">27</td><td>D. Franco</td></tr>
+          <tr data-country="CO" data-naturaleza="indirect" data-sociedad-tipo="operating"><td><span class="badge badge-green"><span class="semaforo s-green"></span>En plazo</span></td><td>🇨🇴 CO</td><td>Soluciones Alegra SAS</td><td>Retención IVA bimestre 2</td><td>2026-B2</td><td>02-jun-2026</td><td class="num">27</td><td>D. Franco</td></tr>
+          <tr data-country="MX" data-naturaleza="direct" data-sociedad-tipo="operating"><td><span class="badge badge-green"><span class="semaforo s-green"></span>En plazo</span></td><td>🇲🇽 MX</td><td>Alegra Contabilidad</td><td>ISR mensual mayo</td><td>2026-05</td><td>17-jun-2026</td><td class="num">42</td><td>Contab. MX</td></tr>
+          <tr data-country="CR" data-naturaleza="indirect" data-sociedad-tipo="operating"><td><span class="badge badge-green"><span class="semaforo s-green"></span>En plazo</span></td><td>🇨🇷 CR</td><td>Alanube SRL</td><td>D-104 IVA mayo</td><td>2026-05</td><td>15-jun-2026</td><td class="num">40</td><td>Contab. CR</td></tr>
+          <tr data-country="PE" data-naturaleza="indirect" data-sociedad-tipo="operating"><td><span class="badge badge-green"><span class="semaforo s-green"></span>En plazo</span></td><td>🇵🇪 PE</td><td>Alanube SAC</td><td>PDT 621 mayo</td><td>2026-05</td><td>20-jun-2026</td><td class="num">45</td><td>Contab. PE</td></tr>
         </tbody>
       </table>
     </div>
@@ -841,43 +879,43 @@ body[data-country]:not([data-country="all"]) .country-cell.country-cell-match { 
         <tr><th>País</th><th>Sociedad</th><th>Tipo</th><th class="num">Monto USD</th><th class="num">Antigüedad</th><th class="num">Plazo legal</th><th class="num">% consumido</th><th>Tramo</th><th>Estado</th><th>Owner</th></tr>
       </thead>
       <tbody>
-        <tr data-country="CO" style="background: var(--red-light);">
+        <tr data-country="CO" data-sociedad-tipo="operating" style="background: var(--red-light);">
           <td>🇨🇴 CO</td><td>Soluciones Alegra SAS</td><td>Retefuente renta 2024</td>
           <td class="num"><strong>3,038</strong></td><td class="num">736 d</td><td class="num">730 d</td>
           <td class="num"><strong>100.8%</strong></td><td><span class="badge badge-red">⛔ Crítico</span></td>
           <td>En trámite</td><td>D. Franco</td>
         </tr>
-        <tr data-country="AR" style="background: var(--orange-light);">
+        <tr data-country="AR" data-sociedad-tipo="operating" style="background: var(--orange-light);">
           <td>🇦🇷 AR</td><td>Alanube SAU</td><td>IVA crédito fiscal</td>
           <td class="num"><strong>9,660</strong></td><td class="num">568 d</td><td class="num">1825 d</td>
           <td class="num">31.1%</td><td><span class="badge badge-yellow">🟡 Amarillo</span></td>
           <td>Pendiente</td><td>Contador AR</td>
         </tr>
-        <tr data-country="MX">
+        <tr data-country="MX" data-sociedad-tipo="operating">
           <td>🇲🇽 MX</td><td>Alegra Contabilidad</td><td>IVA enero 2025</td>
           <td class="num"><strong>3,944</strong></td><td class="num">445 d</td><td class="num">1825 d</td>
           <td class="num">24.4%</td><td><span class="badge badge-green">🟢 Verde</span></td>
           <td>Pendiente</td><td>Contab. MX</td>
         </tr>
-        <tr data-country="PE">
+        <tr data-country="PE" data-sociedad-tipo="operating">
           <td>🇵🇪 PE</td><td>Alanube SAC</td><td>IGV Q4 2024</td>
           <td class="num"><strong>1,123</strong></td><td class="num">476 d</td><td class="num">1460 d</td>
           <td class="num">32.6%</td><td><span class="badge badge-yellow">🟡 Amarillo</span></td>
           <td>En trámite</td><td>Contab. PE</td>
         </tr>
-        <tr data-country="ES">
+        <tr data-country="ES" data-sociedad-tipo="operating">
           <td>🇪🇸 ES</td><td>Alegra Soluciones SL</td><td>IVA modelo 303 T4</td>
           <td class="num"><strong>9,982</strong></td><td class="num">456 d</td><td class="num">1460 d</td>
           <td class="num">31.2%</td><td><span class="badge badge-yellow">🟡 Amarillo</span></td>
           <td>Pendiente</td><td>Contab. ES</td>
         </tr>
-        <tr data-country="CR">
+        <tr data-country="CR" data-sociedad-tipo="operating">
           <td>🇨🇷 CR</td><td>Alanube SRL (CR)</td><td>Renta 2023</td>
           <td class="num"><strong>608</strong></td><td class="num">507 d</td><td class="num">1460 d</td>
           <td class="num">34.7%</td><td><span class="badge badge-yellow">🟡 Amarillo</span></td>
           <td>Pendiente</td><td>Contab. CR</td>
         </tr>
-        <tr data-country="RD">
+        <tr data-country="RD" data-sociedad-tipo="operating">
           <td>🇩🇴 RD</td><td>Alanube SRL (RD)</td><td>ITBIS Q3 2025</td>
           <td class="num"><strong>3,825</strong></td><td class="num">218 d</td><td class="num">1095 d</td>
           <td class="num">19.9%</td><td><span class="badge badge-green">🟢 Verde</span></td>
@@ -926,7 +964,7 @@ body[data-country]:not([data-country="all"]) .country-cell.country-cell-match { 
         <tr><th>Sociedad</th><th>País</th><th>Año origen</th><th class="num">Monto NOL (USD)</th><th>Régimen</th><th class="num">Tope %</th><th>Vence</th><th>Estado</th></tr>
       </thead>
       <tbody>
-        <tr data-country="CO">
+        <tr data-country="CO" data-sociedad-tipo="holding">
           <td>Alegra Holdings SAS</td><td>🇨🇴 CO</td><td>2024</td>
           <td class="num"><strong>1,840,000</strong></td>
           <td>12 años · Art. 147 ET</td>
@@ -934,7 +972,7 @@ body[data-country]:not([data-country="all"]) .country-cell.country-cell-match { 
           <td>2036</td>
           <td><span class="badge badge-blue">Vigente</span></td>
         </tr>
-        <tr data-country="CO">
+        <tr data-country="CO" data-sociedad-tipo="holding">
           <td>Alegra Holdings SAS</td><td>🇨🇴 CO</td><td>2025</td>
           <td class="num"><strong>912,000</strong></td>
           <td>12 años · Art. 147 ET</td>
@@ -942,7 +980,7 @@ body[data-country]:not([data-country="all"]) .country-cell.country-cell-match { 
           <td>2037</td>
           <td><span class="badge badge-blue">Vigente</span></td>
         </tr>
-        <tr data-country="CA">
+        <tr data-country="CA" data-sociedad-tipo="operating">
           <td>Alegra CAN LP</td><td>🇨🇦 CAN</td><td>2025</td>
           <td class="num"><strong>336,000</strong></td>
           <td>20 años · ITA s.111(1)</td>
@@ -950,7 +988,7 @@ body[data-country]:not([data-country="all"]) .country-cell.country-cell-match { 
           <td>2045</td>
           <td><span class="badge badge-blue">Vigente</span></td>
         </tr>
-        <tr data-country="MX">
+        <tr data-country="MX" data-sociedad-tipo="operating">
           <td>Alegra Contabilidad SA de CV</td><td>🇲🇽 MX</td><td>2025</td>
           <td class="num"><strong>375,000</strong></td>
           <td>10 ejercicios · Art. 57 LISR</td>
@@ -958,7 +996,7 @@ body[data-country]:not([data-country="all"]) .country-cell.country-cell-match { 
           <td>2035</td>
           <td><span class="badge badge-blue">Vigente</span></td>
         </tr>
-        <tr data-country="PE">
+        <tr data-country="PE" data-sociedad-tipo="operating">
           <td>Alanube SAC</td><td>🇵🇪 PE</td><td>2025</td>
           <td class="num"><strong>54,800</strong></td>
           <td>Sistema A · 4 años · Art. 50 LIR</td>
@@ -1031,12 +1069,12 @@ body[data-country]:not([data-country="all"]) .country-cell.country-cell-match { 
         <tr><th>País</th><th>Sociedad</th><th>Tipo</th><th>Descripción</th><th>Año</th><th class="num">Expuesto USD</th><th>Probabilidad</th><th class="num">Ponderado USD</th><th class="num">Provisionado</th><th class="num">Gap</th><th>Estado</th></tr>
       </thead>
       <tbody>
-        <tr data-country="CO"><td>🇨🇴 CO</td><td>Soluciones Alegra SAS</td><td>Requerimiento DIAN</td><td>DIAN cuestiona deducibilidad gastos 2022</td><td>2022</td><td class="num">180,000</td><td><span class="badge badge-red">Alta &gt;70%</span></td><td class="num">135,000</td><td class="num">120,000</td><td class="num" style="color: var(--orange);">15,000</td><td><span class="badge badge-orange">En discusión</span></td></tr>
-        <tr data-country="AR" style="background: var(--red-light);"><td>🇦🇷 AR</td><td>Alanube SAU</td><td>Auditoría AFIP</td><td>Revisión IVA 2021–2022</td><td>2021-22</td><td class="num">95,000</td><td><span class="badge badge-yellow">Media 30-70%</span></td><td class="num">47,500</td><td class="num">0</td><td class="num" style="color: var(--red); font-weight: 600;">47,500</td><td><span class="badge badge-red">Auditoría abierta</span></td></tr>
-        <tr data-country="MX"><td>🇲🇽 MX</td><td>Alegra Contabilidad</td><td>Posición gris ISR</td><td>Deducción pagos al extranjero Art.28 LIS</td><td>2023</td><td class="num">62,000</td><td><span class="badge badge-yellow">Media</span></td><td class="num">24,800</td><td class="num">18,000</td><td class="num" style="color: var(--orange);">6,800</td><td><span class="badge badge-blue">Monitoreo</span></td></tr>
-        <tr data-country="ES"><td>🇪🇸 ES</td><td>Alegra Soluciones SL</td><td>Precios de transferencia</td><td>Margen intercompany cuestionado</td><td>2022-23</td><td class="num">45,000</td><td><span class="badge badge-green">Baja &lt;30%</span></td><td class="num">9,000</td><td class="num">0</td><td class="num">9,000</td><td><span class="badge badge-blue">Monitoreo</span></td></tr>
-        <tr data-country="CR"><td>🇨🇷 CR</td><td>Alanube SRL</td><td>Requerimiento Hacienda</td><td>Gastos no deducibles identificados</td><td>2023</td><td class="num">28,000</td><td><span class="badge badge-red">Alta</span></td><td class="num">21,000</td><td class="num">21,000</td><td class="num">0</td><td><span class="badge badge-orange">En discusión</span></td></tr>
-        <tr data-country="CA" style="background: var(--red-light);"><td>🇨🇦 CAN</td><td>Alegra CAN LP</td><td>Riesgo establecimiento permanente</td><td>Análisis post-migración contratistas</td><td>2024</td><td class="num">210,000</td><td><span class="badge badge-yellow">Media</span></td><td class="num">105,000</td><td class="num">0</td><td class="num" style="color: var(--red); font-weight: 600;">105,000</td><td><span class="badge badge-red">Análisis legal</span></td></tr>
+        <tr data-country="CO" data-sociedad-tipo="operating"><td>🇨🇴 CO</td><td>Soluciones Alegra SAS</td><td>Requerimiento DIAN</td><td>DIAN cuestiona deducibilidad gastos 2022</td><td>2022</td><td class="num">180,000</td><td><span class="badge badge-red">Alta &gt;70%</span></td><td class="num">135,000</td><td class="num">120,000</td><td class="num" style="color: var(--orange);">15,000</td><td><span class="badge badge-orange">En discusión</span></td></tr>
+        <tr data-country="AR" data-sociedad-tipo="operating" style="background: var(--red-light);"><td>🇦🇷 AR</td><td>Alanube SAU</td><td>Auditoría AFIP</td><td>Revisión IVA 2021–2022</td><td>2021-22</td><td class="num">95,000</td><td><span class="badge badge-yellow">Media 30-70%</span></td><td class="num">47,500</td><td class="num">0</td><td class="num" style="color: var(--red); font-weight: 600;">47,500</td><td><span class="badge badge-red">Auditoría abierta</span></td></tr>
+        <tr data-country="MX" data-sociedad-tipo="operating"><td>🇲🇽 MX</td><td>Alegra Contabilidad</td><td>Posición gris ISR</td><td>Deducción pagos al extranjero Art.28 LIS</td><td>2023</td><td class="num">62,000</td><td><span class="badge badge-yellow">Media</span></td><td class="num">24,800</td><td class="num">18,000</td><td class="num" style="color: var(--orange);">6,800</td><td><span class="badge badge-blue">Monitoreo</span></td></tr>
+        <tr data-country="ES" data-sociedad-tipo="operating"><td>🇪🇸 ES</td><td>Alegra Soluciones SL</td><td>Precios de transferencia</td><td>Margen intercompany cuestionado</td><td>2022-23</td><td class="num">45,000</td><td><span class="badge badge-green">Baja &lt;30%</span></td><td class="num">9,000</td><td class="num">0</td><td class="num">9,000</td><td><span class="badge badge-blue">Monitoreo</span></td></tr>
+        <tr data-country="CR" data-sociedad-tipo="operating"><td>🇨🇷 CR</td><td>Alanube SRL</td><td>Requerimiento Hacienda</td><td>Gastos no deducibles identificados</td><td>2023</td><td class="num">28,000</td><td><span class="badge badge-red">Alta</span></td><td class="num">21,000</td><td class="num">21,000</td><td class="num">0</td><td><span class="badge badge-orange">En discusión</span></td></tr>
+        <tr data-country="CA" data-sociedad-tipo="operating" style="background: var(--red-light);"><td>🇨🇦 CAN</td><td>Alegra CAN LP</td><td>Riesgo establecimiento permanente</td><td>Análisis post-migración contratistas</td><td>2024</td><td class="num">210,000</td><td><span class="badge badge-yellow">Media</span></td><td class="num">105,000</td><td class="num">0</td><td class="num" style="color: var(--red); font-weight: 600;">105,000</td><td><span class="badge badge-red">Análisis legal</span></td></tr>
       </tbody>
     </table>
     <div class="alert-card" style="margin-top: 16px;">
@@ -1228,14 +1266,53 @@ body[data-country]:not([data-country="all"]) .country-cell.country-cell-match { 
 </footer>
 
 <script>
-function showTab(e, id) {
+function showTab(eOrId, idArg) {
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  e.currentTarget.classList.add('active');
-  document.getElementById(id).classList.add('active');
+
+  let targetId, targetTab;
+  if (typeof eOrId === 'string') {
+    targetId = eOrId;
+    targetTab = document.querySelector(`.tab[data-tab-id="${targetId}"]`);
+  } else if (eOrId && eOrId.target) {
+    targetId = idArg;
+    targetTab = (eOrId.target.closest && eOrId.target.closest('.tab')) || eOrId.currentTarget;
+  } else {
+    targetId = idArg;
+  }
+  if (targetTab) targetTab.classList.add('active');
+  const targetPage = document.getElementById(targetId);
+  if (targetPage) targetPage.classList.add('active');
 }
 
-// ===== REACTIVE FILTER ENGINE =====
+// ===== REACTIVE FILTER ENGINE (refactor v2) =====
+
+const COUNTRY_DATA = {
+  'all':  { flag: '🌎', name: 'Vista consolidada — Todos los países', sociedades: '13 sociedades activas en 11 países', rate: '—', rateCtx: 'Selecciona un país para ver tarifa nominal',
+            etr: '24.1', etrPrev: '22.8', etrDelta: '▲ +1.3 pp', paid: '162.4', paidPrev: '155.1', paidDelta: '▲ +4.7%', saldos: '32.2', saldosNote: '<span class="badge badge-orange">⚠ 2 casos críticos</span>', compliance: '91', complianceNote: '14 obligaciones próximas', view: 'consolidated' },
+  'CO':   { flag: '🇨🇴', name: 'Colombia', sociedades: 'Alegra Holdings SAS · Soluciones Alegra SAS · Alero Global SAS', rate: '35%', rateCtx: '+ sobretasa cuando aplica · Art. 240 ET',
+            etr: '26.4', etrPrev: '24.9', etrDelta: '▲ +1.5 pp', paid: '86.5', paidPrev: '82.1', paidDelta: '▲ +5.4%', saldos: '3.0', saldosNote: '<span class="badge badge-orange">⚠ 1 caso a 75% del plazo legal</span>', compliance: '95', complianceNote: '2 obligaciones próximas', view: 'co-detail' },
+  'MX':   { flag: '🇲🇽', name: 'México', sociedades: 'Alegra Contabilidad SA de CV', rate: '30%', rateCtx: 'Art. 9 LISR',
+            etr: '30.1', etrPrev: '29.4', etrDelta: '▲ +0.7 pp', paid: '21.2', paidPrev: '19.8', paidDelta: '▲ +7.1%', saldos: '3.9', saldosNote: '1 saldo IVA · 24% del plazo', compliance: '98', complianceNote: '2 obligaciones próximas', view: 'placeholder' },
+  'AR':   { flag: '🇦🇷', name: 'Argentina', sociedades: 'Alanube SAU', rate: '25–35%', rateCtx: 'Escalonada · Ley 27.630',
+            etr: '31.5', etrPrev: '30.1', etrDelta: '▲ +1.4 pp', paid: '14.8', paidPrev: '13.5', paidDelta: '▲ +9.6%', saldos: '9.7', saldosNote: '<span class="badge badge-yellow">31% del plazo</span>', compliance: '72', complianceNote: '<strong style="color:var(--orange)">⚠ Bajo umbral aceptable</strong>', view: 'placeholder' },
+  'RD':   { flag: '🇩🇴', name: 'Rep. Dominicana', sociedades: 'Alanube Soluciones SRL (RD)', rate: '27%', rateCtx: 'Cód. Tributario',
+            etr: '25.7', etrPrev: '24.8', etrDelta: '▲ +0.9 pp', paid: '5.1', paidPrev: '4.7', paidDelta: '▲ +8.5%', saldos: '3.8', saldosNote: '🟢 Verde · 20% del plazo', compliance: '68', complianceNote: '<strong style="color:var(--red)">⚠ Riesgo de multas</strong>', view: 'placeholder' },
+  'CR':   { flag: '🇨🇷', name: 'Costa Rica', sociedades: 'Alanube Soluciones SRL (CR)', rate: '30%', rateCtx: 'Escalonada · Ley 7092 / 9635',
+            etr: '22.8', etrPrev: '22.1', etrDelta: '▲ +0.7 pp', paid: '8.4', paidPrev: '7.9', paidDelta: '▲ +6.3%', saldos: '0.6', saldosNote: '🟡 35% del plazo', compliance: '97', complianceNote: '1 obligación próxima', view: 'placeholder' },
+  'PA':   { flag: '🇵🇦', name: 'Panamá', sociedades: 'Alanube Soluciones SA', rate: '25%', rateCtx: 'Art. 700 CF',
+            etr: '23.4', etrPrev: '22.9', etrDelta: '▲ +0.5 pp', paid: '4.2', paidPrev: '4.0', paidDelta: '▲ +5.0%', saldos: '0.0', saldosNote: 'Sin saldos vivos', compliance: '96', complianceNote: 'Aviso de Operación próximo', view: 'placeholder' },
+  'PE':   { flag: '🇵🇪', name: 'Perú', sociedades: 'Alanube SAC', rate: '29.5%', rateCtx: 'Art. 55 LIR',
+            etr: '26.1', etrPrev: '25.5', etrDelta: '▲ +0.6 pp', paid: '6.3', paidPrev: '6.0', paidDelta: '▲ +5.0%', saldos: '1.1', saldosNote: '🟡 33% del plazo', compliance: '94', complianceNote: '1 obligación próxima', view: 'placeholder' },
+  'ES':   { flag: '🇪🇸', name: 'España', sociedades: 'Alegra Soluciones SL', rate: '25%', rateCtx: 'Art. 29 LIS',
+            etr: '24.6', etrPrev: '23.9', etrDelta: '▲ +0.7 pp', paid: '11.7', paidPrev: '11.0', paidDelta: '▲ +6.4%', saldos: '10.0', saldosNote: '🟡 31% del plazo', compliance: '100', complianceNote: 'Sin pendientes', view: 'placeholder' },
+  'US':   { flag: '🇺🇸', name: 'Estados Unidos', sociedades: 'Alegra USA LLC', rate: '21% federal', rateCtx: '+ State CIT (varía)',
+            etr: '25.3', etrPrev: '24.8', etrDelta: '▲ +0.5 pp', paid: '3.2', paidPrev: '2.9', paidDelta: '▲ +10.3%', saldos: '0.0', saldosNote: 'Sin saldos vivos', compliance: '—', complianceNote: 'Calendario en carga', view: 'placeholder' },
+  'CA':   { flag: '🇨🇦', name: 'Canadá', sociedades: 'Alegra CAN LP', rate: '15% federal', rateCtx: '+ Provincial (varía)',
+            etr: 'N/M', etrPrev: 'N/M', etrDelta: 'UAI negativa', paid: '9.2', paidPrev: '8.6', paidDelta: '▲ +7.0%', saldos: '0.0', saldosNote: 'Sin saldos vivos', compliance: '100', complianceNote: 'Sin pendientes', view: 'placeholder' },
+  'UK':   { flag: '🇬🇧', name: 'Reino Unido', sociedades: 'Six Green LLC', rate: '25%', rateCtx: '19% small profits · CTA 2010',
+            etr: '23.1', etrPrev: '22.5', etrDelta: '▲ +0.6 pp', paid: '1.9', paidPrev: '1.7', paidDelta: '▲ +11.8%', saldos: '0.0', saldosNote: 'Sin saldos vivos', compliance: '—', complianceNote: 'Calendario en carga', view: 'placeholder' }
+};
 
 const KPI_DATASETS = {
   '2026-ytd': {
@@ -1281,78 +1358,133 @@ const filterState = {
 function applyKPIs() {
   const data = KPI_DATASETS[filterState.year];
   if (!data) return;
-  const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
-  const setHTML = (id, html) => { const el = document.getElementById(id); if (el) el.innerHTML = html; };
+  const set = (id, val) => { const el = document.getElementById(id); if (el && val !== undefined) el.textContent = val; };
+  const setHTML = (id, html) => { const el = document.getElementById(id); if (el && html !== undefined) el.innerHTML = html; };
+  const setClass = (id, cls) => { const el = document.getElementById(id); if (el) el.className = cls; };
 
-  set('kpi-etr-value', data.etr.value);
-  set('kpi-etr-prev', data.etr.prev);
-  set('kpi-etr-sub', data.etr.sub);
-  setHTML('kpi-etr-delta', data.etr.delta);
-  document.getElementById('kpi-etr-delta').className = 'kpi-delta ' + data.etr.deltaClass;
-
-  set('kpi-cash-value', data.cash.value);
-  set('kpi-cash-prev', data.cash.prev);
-  setHTML('kpi-cash-delta', data.cash.delta);
-  document.getElementById('kpi-cash-delta').className = 'kpi-delta ' + data.cash.deltaClass;
-
-  set('kpi-paid-value', data.paid.value);
-  set('kpi-paid-prev', data.paid.prev);
-  set('kpi-paid-prev-label', data.paid.prevLabel);
-  set('kpi-paid-title', data.paid.title);
-  set('kpi-paid-sub', data.paid.sub);
-  setHTML('kpi-paid-delta', data.paid.delta);
-  document.getElementById('kpi-paid-delta').className = 'kpi-delta ' + data.paid.deltaClass;
-
-  set('kpi-prov-value', data.prov.value);
-  set('kpi-prov-prev', data.prov.prev);
-  set('kpi-prov-prev-label', data.prov.prevLabel);
+  set('kpi-etr-value', data.etr.value); set('kpi-etr-prev', data.etr.prev); set('kpi-etr-sub', data.etr.sub);
+  setHTML('kpi-etr-delta', data.etr.delta); setClass('kpi-etr-delta', 'kpi-delta ' + data.etr.deltaClass);
+  set('kpi-cash-value', data.cash.value); set('kpi-cash-prev', data.cash.prev);
+  setHTML('kpi-cash-delta', data.cash.delta); setClass('kpi-cash-delta', 'kpi-delta ' + data.cash.deltaClass);
+  set('kpi-paid-value', data.paid.value); set('kpi-paid-prev', data.paid.prev); set('kpi-paid-prev-label', data.paid.prevLabel);
+  set('kpi-paid-title', data.paid.title); set('kpi-paid-sub', data.paid.sub);
+  setHTML('kpi-paid-delta', data.paid.delta); setClass('kpi-paid-delta', 'kpi-delta ' + data.paid.deltaClass);
+  set('kpi-prov-value', data.prov.value); set('kpi-prov-prev', data.prov.prev); set('kpi-prov-prev-label', data.prov.prevLabel);
   set('kpi-prov-title', data.prov.title);
-  setHTML('kpi-prov-delta', data.prov.delta);
-  document.getElementById('kpi-prov-delta').className = 'kpi-delta ' + data.prov.deltaClass;
-
-  set('kpi-saldos-value', data.saldos.value);
-  set('kpi-saldos-prev', data.saldos.prev);
-  set('kpi-saldos-cost', data.saldos.cost);
-  setHTML('kpi-saldos-delta', data.saldos.delta);
-  document.getElementById('kpi-saldos-delta').className = 'kpi-delta ' + data.saldos.deltaClass;
+  setHTML('kpi-prov-delta', data.prov.delta); setClass('kpi-prov-delta', 'kpi-delta ' + data.prov.deltaClass);
+  set('kpi-saldos-value', data.saldos.value); set('kpi-saldos-prev', data.saldos.prev); set('kpi-saldos-cost', data.saldos.cost);
+  setHTML('kpi-saldos-delta', data.saldos.delta); setClass('kpi-saldos-delta', 'kpi-delta ' + data.saldos.deltaClass);
 }
 
-function applyCountryFilter() {
+// Render Vista por País dinámicamente desde COUNTRY_DATA
+function applyVistaPorPais() {
   const c = filterState.country;
-  document.querySelectorAll('tr[data-country]').forEach(row => {
-    const match = c === 'all' || row.getAttribute('data-country') === c;
-    row.setAttribute('data-country-match', match ? 'true' : 'false');
+  const data = COUNTRY_DATA[c] || COUNTRY_DATA['all'];
+  const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+  const setHTML = (id, v) => { const el = document.getElementById(id); if (el) el.innerHTML = v; };
+
+  set('pais-flag', data.flag);
+  set('pais-name', data.name);
+  set('pais-sociedades', data.sociedades);
+  set('pais-rate', data.rate);
+  set('pais-rate-context', data.rateCtx);
+  set('pais-etr', data.etr);
+  set('pais-etr-prev', data.etrPrev);
+  set('pais-etr-delta', data.etrDelta);
+  set('pais-paid', data.paid);
+  set('pais-paid-prev', data.paidPrev);
+  set('pais-paid-delta', data.paidDelta);
+  set('pais-saldos', data.saldos);
+  setHTML('pais-saldos-note', data.saldosNote);
+  set('pais-compliance', data.compliance);
+  setHTML('pais-compliance-note', data.complianceNote);
+
+  // Mostrar / ocultar las tres vistas
+  const phOther = document.getElementById('pais-placeholder-other');
+  const phAll = document.getElementById('pais-placeholder-all');
+  if (phOther) phOther.style.display = (data.view === 'placeholder') ? 'block' : 'none';
+  if (phAll) phAll.style.display = (data.view === 'consolidated') ? 'block' : 'none';
+  if (data.view === 'placeholder') {
+    set('pais-placeholder-flag', data.flag);
+    set('pais-placeholder-name', data.name);
+  }
+}
+
+// Filtros combinados sobre filas (país + sociedad + naturaleza)
+function applyRowFilters() {
+  // Limpiar empty-row anteriores PRIMERO siempre
+  document.querySelectorAll('.empty-row-msg-tr').forEach(el => el.remove());
+
+  const c = filterState.country;
+  const s = filterState.sociedad;
+  const n = filterState.naturaleza;
+
+  document.querySelectorAll('tr[data-country], tr[data-sociedad-tipo], tr[data-naturaleza]').forEach(row => {
+    let show = true;
+    const rowCountry = row.getAttribute('data-country');
+    const rowSociedad = row.getAttribute('data-sociedad-tipo');
+    const rowNaturaleza = row.getAttribute('data-naturaleza');
+
+    if (rowCountry && c !== 'all' && rowCountry !== c) show = false;
+    if (show && rowSociedad) {
+      if (s === 'operating' && rowSociedad !== 'operating') show = false;
+      if (s === 'holdings' && rowSociedad !== 'holding') show = false;
+    }
+    if (show && rowNaturaleza) {
+      if (n === 'direct' && rowNaturaleza !== 'direct') show = false;
+      if (n === 'indirect' && rowNaturaleza !== 'indirect') show = false;
+      if (n === 'income-tax' && rowNaturaleza !== 'direct') show = false;
+    }
+    row.style.display = show ? '' : 'none';
   });
+
+  // Heatmap del cockpit
   document.querySelectorAll('.country-cell').forEach(cell => {
     const match = c === 'all' || cell.getAttribute('data-country') === c;
     cell.classList.toggle('country-cell-match', match && c !== 'all');
   });
-  // Also: limpiar mensajes de "vacío" previos
-  document.querySelectorAll('.empty-row-msg').forEach(el => el.remove());
-  if (c !== 'all') {
-    document.querySelectorAll('table tbody').forEach(tbody => {
-      const visible = Array.from(tbody.querySelectorAll('tr[data-country]')).filter(r => r.getAttribute('data-country-match') === 'true');
-      if (visible.length === 0 && tbody.querySelectorAll('tr[data-country]').length > 0) {
-        const msg = document.createElement('tr');
-        msg.className = 'empty-row-msg-tr';
-        const colCount = tbody.parentElement.querySelectorAll('thead th').length || 6;
-        msg.innerHTML = `<td colspan="${colCount}" style="padding: 24px; text-align: center; color: var(--text-secondary); background: var(--gray-light);">No hay registros para el país seleccionado.</td>`;
-        tbody.appendChild(msg);
-      }
-    });
-  } else {
-    document.querySelectorAll('.empty-row-msg-tr').forEach(el => el.remove());
-  }
+
+  // Mensaje "vacío" si una tabla quedó sin filas visibles
+  document.querySelectorAll('table tbody').forEach(tbody => {
+    const totalRowsWithMeta = tbody.querySelectorAll('tr[data-country], tr[data-sociedad-tipo], tr[data-naturaleza]').length;
+    if (totalRowsWithMeta === 0) return;
+    const visibleRows = Array.from(tbody.querySelectorAll('tr[data-country], tr[data-sociedad-tipo], tr[data-naturaleza]'))
+      .filter(r => r.style.display !== 'none');
+    if (visibleRows.length === 0) {
+      const table = tbody.closest('table');
+      const colCount = (table && table.querySelectorAll('thead th').length) || 6;
+      const msg = document.createElement('tr');
+      msg.className = 'empty-row-msg-tr';
+      msg.innerHTML = `<td colspan="${colCount}" style="padding: 24px; text-align: center; color: var(--text-secondary); background: var(--gray-light);">No hay registros para los filtros seleccionados.</td>`;
+      tbody.appendChild(msg);
+    }
+  });
 }
 
 function applyCurrency() {
-  const cur = CURRENCY_LABELS[filterState.currency];
   document.querySelectorAll('.kpi-currency-label').forEach(el => {
     el.textContent = filterState.currency === 'usd' ? 'USD' : '(local)';
   });
   if (filterState.currency === 'local' && filterState.country === 'all') {
-    showOverlay('💱 Moneda local seleccionada — vista consolidada se mantiene en USD. Selecciona un país específico para ver moneda local.');
+    showOverlay('💱 Moneda local: la vista consolidada se mantiene en USD para evitar mezcla de monedas. Selecciona un país específico para ver moneda local.');
   }
+}
+
+// Toggle de comparativos YoY: oculta series 2025 en charts también
+function applyYoYToCharts() {
+  const off = filterState.yoy === 'off';
+  if (!window.chartInstances) return;
+  Object.values(window.chartInstances).forEach(chart => {
+    if (!chart || !chart.data || !chart.data.datasets) return;
+    chart.data.datasets.forEach((ds, i) => {
+      if (ds.label && /2025/.test(ds.label)) {
+        chart.setDatasetVisibility(i, !off);
+      } else {
+        chart.setDatasetVisibility(i, true);
+      }
+    });
+    chart.update('none');
+  });
 }
 
 function updateActiveFilterBadge() {
@@ -1392,8 +1524,10 @@ function applyAllFilters() {
   document.body.dataset.currency = filterState.currency;
 
   applyKPIs();
-  applyCountryFilter();
+  applyVistaPorPais();
+  applyRowFilters();
   applyCurrency();
+  applyYoYToCharts();
   updateActiveFilterBadge();
 }
 
@@ -1442,11 +1576,13 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 
 window.addEventListener('DOMContentLoaded', () => {
+  if (typeof Chart === 'undefined') { console.warn('Chart.js no cargó'); return; }
+  window.chartInstances = window.chartInstances || {};
   const months = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
   const monthsYTD = ['Ene','Feb','Mar','Abr'];
 
   // ETR vs UAI
-  new Chart(document.getElementById('chart-etr-uai'), {
+  window.chartInstances.etrUai = new Chart(document.getElementById('chart-etr-uai'), {
     type: 'bar',
     data: {
       labels: months,
@@ -1469,7 +1605,7 @@ window.addEventListener('DOMContentLoaded', () => {
   });
 
   // Top 5 impuestos
-  new Chart(document.getElementById('chart-top5'), {
+  window.chartInstances.top5 = new Chart(document.getElementById('chart-top5'), {
     type: 'bar',
     data: {
       labels: ['Renta CO','ISR MX','ICA CO','Ganancias AR','Renta CR'],
@@ -1486,7 +1622,7 @@ window.addEventListener('DOMContentLoaded', () => {
   });
 
   // Carga por país comparativa
-  new Chart(document.getElementById('chart-pais'), {
+  window.chartInstances.pais = new Chart(document.getElementById('chart-pais'), {
     type: 'bar',
     data: {
       labels: ['CO','MX','AR','ES','CAN','CR','PE','RD','PAN','USA','UK'],
@@ -1503,7 +1639,7 @@ window.addEventListener('DOMContentLoaded', () => {
   });
 
   // Por sociedad
-  new Chart(document.getElementById('chart-sociedad'), {
+  window.chartInstances.sociedad = new Chart(document.getElementById('chart-sociedad'), {
     type: 'bar',
     data: {
       labels: ['Sol. Alegra SAS', 'Alero Global SAS', 'Alegra Holdings', 'Alegra MX', 'Alanube AR', 'Alegra ES', 'Alegra CAN', 'Alanube CR', 'Alanube PE', 'Alanube RD', 'Alanube PAN', 'Alegra USA', 'Six Green UK'],
@@ -1523,7 +1659,7 @@ window.addEventListener('DOMContentLoaded', () => {
   });
 
   // Naturaleza donut
-  new Chart(document.getElementById('chart-naturaleza'), {
+  window.chartInstances.naturaleza = new Chart(document.getElementById('chart-naturaleza'), {
     type: 'doughnut',
     data: {
       labels: ['Directos', 'Indirectos'],
@@ -1537,7 +1673,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
   // IVA Colombia
   if (document.getElementById('chart-iva-co')) {
-    new Chart(document.getElementById('chart-iva-co'), {
+    window.chartInstances.ivaCo = new Chart(document.getElementById('chart-iva-co'), {
       type: 'bar',
       data: {
         labels: monthsYTD,
@@ -1555,7 +1691,7 @@ window.addEventListener('DOMContentLoaded', () => {
   }
 
   if (document.getElementById('chart-pago-prov-co')) {
-    new Chart(document.getElementById('chart-pago-prov-co'), {
+    window.chartInstances.pagoProvCo = new Chart(document.getElementById('chart-pago-prov-co'), {
       type: 'bar',
       data: {
         labels: monthsYTD,
@@ -1573,7 +1709,7 @@ window.addEventListener('DOMContentLoaded', () => {
   }
 
   if (document.getElementById('chart-ica-municipio')) {
-    new Chart(document.getElementById('chart-ica-municipio'), {
+    window.chartInstances.icaMunicipio = new Chart(document.getElementById('chart-ica-municipio'), {
       type: 'doughnut',
       data: {
         labels: ['Bogotá DC', 'Medellín', 'Cali', 'Barranquilla', 'Cartagena'],
@@ -1594,7 +1730,7 @@ window.addEventListener('DOMContentLoaded', () => {
   }
 
   if (document.getElementById('chart-cashflow')) {
-    new Chart(document.getElementById('chart-cashflow'), {
+    window.chartInstances.cashflow = new Chart(document.getElementById('chart-cashflow'), {
       type: 'bar',
       data: {
         labels: ['May 26','Jun 26','Jul 26','Ago 26','Sep 26','Oct 26'],
@@ -1610,6 +1746,9 @@ window.addEventListener('DOMContentLoaded', () => {
       }
     });
   }
+
+  // Charts ya creados — re-aplicar filtros para que respeten estado inicial / persistido
+  if (typeof applyAllFilters === 'function') applyAllFilters();
 });
 </script>
 
