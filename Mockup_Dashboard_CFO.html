@@ -1,0 +1,1163 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tax Dashboard Alegra — Mockup CFO</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+:root {
+  --primary: #1A73E8;
+  --primary-dark: #1557B0;
+  --primary-light: #E8F0FE;
+  --green: #34A853;
+  --green-light: #E6F4EA;
+  --yellow: #FBBC04;
+  --yellow-light: #FEF7E0;
+  --orange: #FA7B17;
+  --orange-light: #FEEFE3;
+  --red: #EA4335;
+  --red-light: #FCE8E6;
+  --gray: #5F6368;
+  --gray-light: #F1F3F4;
+  --gray-border: #DADCE0;
+  --bg: #F8F9FA;
+  --card: #FFFFFF;
+  --text: #202124;
+  --text-secondary: #5F6368;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Google Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 13px;
+  line-height: 1.5;
+}
+header {
+  background: var(--card);
+  border-bottom: 1px solid var(--gray-border);
+  padding: 14px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+}
+.logo { font-size: 18px; font-weight: 500; display: flex; align-items: center; gap: 12px; }
+.logo-icon { width: 32px; height: 32px; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); border-radius: 6px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; }
+.tag { color: var(--primary); font-size: 11px; padding: 3px 10px; background: var(--primary-light); border-radius: 12px; font-weight: 500; }
+.header-meta { display: flex; gap: 16px; font-size: 12px; color: var(--text-secondary); align-items: center; }
+.mockup-banner {
+  background: var(--yellow-light);
+  color: #5F4C04;
+  padding: 8px 24px;
+  text-align: center;
+  font-size: 12px;
+  font-weight: 500;
+  border-bottom: 1px solid var(--yellow);
+}
+.filter-bar {
+  background: var(--card);
+  padding: 12px 24px;
+  border-bottom: 1px solid var(--gray-border);
+  display: flex;
+  gap: 16px;
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+.filter { display: flex; flex-direction: column; gap: 4px; }
+.filter label { font-size: 10px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; font-weight: 500; }
+.filter select, .filter input {
+  border: 1px solid var(--gray-border);
+  border-radius: 4px;
+  padding: 6px 10px;
+  background: white;
+  font-size: 13px;
+  min-width: 150px;
+  cursor: pointer;
+}
+.btn {
+  background: var(--primary);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+}
+.btn:hover { background: var(--primary-dark); }
+.tabs {
+  background: var(--card);
+  padding: 0 24px;
+  display: flex;
+  border-bottom: 1px solid var(--gray-border);
+  overflow-x: auto;
+}
+.tab {
+  padding: 14px 18px;
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  color: var(--text-secondary);
+  font-weight: 500;
+  white-space: nowrap;
+  transition: all 0.15s;
+  font-size: 13px;
+}
+.tab.active { color: var(--primary); border-bottom-color: var(--primary); }
+.tab:hover { background: var(--gray-light); }
+.tier-icon { font-size: 10px; margin-left: 4px; }
+main { padding: 24px; max-width: 1600px; margin: 0 auto; }
+.page { display: none; }
+.page.active { display: block; animation: fadeIn 0.2s ease-in; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+.grid { display: grid; gap: 16px; margin-bottom: 16px; }
+.grid-5 { grid-template-columns: repeat(5, 1fr); }
+.grid-4 { grid-template-columns: repeat(4, 1fr); }
+.grid-3 { grid-template-columns: repeat(3, 1fr); }
+.grid-2 { grid-template-columns: repeat(2, 1fr); }
+.grid-2-1 { grid-template-columns: 2fr 1fr; }
+.grid-1-2 { grid-template-columns: 1fr 2fr; }
+.card {
+  background: var(--card);
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  border: 1px solid var(--gray-border);
+}
+.card-title {
+  font-size: 11px;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 10px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.card-subtitle { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
+.kpi-value { font-size: 28px; font-weight: 500; color: var(--text); line-height: 1.1; }
+.kpi-value.small { font-size: 22px; }
+.kpi-unit { font-size: 14px; color: var(--text-secondary); margin-left: 4px; font-weight: 400; }
+.kpi-comparison {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--gray-border);
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  font-size: 12px;
+  flex-wrap: wrap;
+}
+.kpi-prev { color: var(--text-secondary); }
+.kpi-prev-label { color: var(--text-secondary); font-size: 11px; }
+.kpi-delta { font-weight: 500; padding: 2px 6px; border-radius: 4px; font-size: 11px; }
+.delta-up-bad { color: var(--red); background: var(--red-light); }
+.delta-up-good { color: var(--green); background: var(--green-light); }
+.delta-down-bad { color: var(--red); background: var(--red-light); }
+.delta-down-good { color: var(--green); background: var(--green-light); }
+.delta-neutral { color: var(--gray); background: var(--gray-light); }
+.section-title { font-size: 14px; font-weight: 500; margin: 24px 0 12px; color: var(--text); }
+.section-title:first-child { margin-top: 0; }
+.chart-wrap { position: relative; height: 280px; }
+.chart-wrap.tall { height: 360px; }
+.chart-wrap.short { height: 200px; }
+table { width: 100%; border-collapse: collapse; font-size: 12px; }
+table th { text-align: left; padding: 10px 12px; background: var(--gray-light); color: var(--text-secondary); font-weight: 500; font-size: 11px; text-transform: uppercase; letter-spacing: 0.3px; border-bottom: 1px solid var(--gray-border); }
+table td { padding: 10px 12px; border-bottom: 1px solid var(--gray-light); }
+table tr:hover td { background: #FAFAFA; }
+table .num { text-align: right; font-variant-numeric: tabular-nums; font-feature-settings: 'tnum'; }
+.badge { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 500; }
+.badge-green { background: var(--green-light); color: #1E7E34; }
+.badge-yellow { background: var(--yellow-light); color: #856404; }
+.badge-orange { background: var(--orange-light); color: #B7531B; }
+.badge-red { background: var(--red-light); color: #B33020; }
+.badge-blue { background: var(--primary-light); color: var(--primary-dark); }
+.badge-gray { background: var(--gray-light); color: var(--gray); }
+.semaforo { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
+.s-green { background: var(--green); }
+.s-yellow { background: var(--yellow); }
+.s-orange { background: var(--orange); }
+.s-red { background: var(--red); }
+.heatmap { display: grid; grid-template-columns: repeat(11, 1fr); gap: 4px; }
+.heatmap-cell { aspect-ratio: 1.5; padding: 8px; border-radius: 4px; display: flex; flex-direction: column; justify-content: space-between; color: white; font-size: 11px; }
+.bar-mini { height: 6px; background: var(--gray-light); border-radius: 3px; overflow: hidden; margin-top: 4px; }
+.bar-mini-fill { height: 100%; background: var(--primary); border-radius: 3px; }
+.country-row { display: flex; align-items: center; gap: 10px; }
+.country-flag { font-size: 16px; }
+.row-flex { display: flex; align-items: center; gap: 8px; }
+.divergent-bar { display: flex; align-items: center; gap: 4px; height: 24px; }
+.divergent-bar .bar-pos { background: var(--green); height: 100%; border-radius: 0 4px 4px 0; }
+.divergent-bar .bar-neg { background: var(--red); height: 100%; border-radius: 4px 0 0 4px; }
+.divergent-bar .bar-axis { width: 1px; background: var(--gray); height: 100%; }
+.alert-card { border-left: 4px solid var(--red); background: var(--red-light); padding: 12px 16px; border-radius: 4px; margin-bottom: 12px; }
+.alert-card .alert-title { font-weight: 500; color: #B33020; margin-bottom: 4px; font-size: 13px; }
+.alert-card .alert-body { color: #5F2E27; font-size: 12px; }
+.legend { display: flex; gap: 16px; font-size: 11px; color: var(--text-secondary); }
+.legend-dot { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 4px; vertical-align: middle; }
+.tier-public { color: var(--green); }
+.tier-restricted { color: var(--orange); }
+.tier-confidential { color: var(--red); }
+.waterfall-row { display: grid; grid-template-columns: 220px 60px 1fr 100px; align-items: center; gap: 12px; padding: 8px 0; font-size: 12px; }
+.waterfall-row .wf-bar { height: 24px; border-radius: 3px; position: relative; }
+.waterfall-row .wf-bar.positive { background: var(--green); }
+.waterfall-row .wf-bar.negative { background: var(--red); }
+.waterfall-row .wf-bar.neutral { background: var(--primary); }
+.waterfall-row .wf-bar.subtotal { background: var(--gray); }
+.tab-group { display: flex; gap: 4px; margin-bottom: 16px; border-bottom: 1px solid var(--gray-border); }
+.tab-pill { padding: 8px 14px; cursor: pointer; border-radius: 4px 4px 0 0; color: var(--text-secondary); font-size: 12px; font-weight: 500; }
+.tab-pill.active { background: var(--primary-light); color: var(--primary); border-bottom: 2px solid var(--primary); }
+.tac { display: grid; grid-template-columns: 1fr 1fr; gap: 0; border: 1px solid var(--gray-border); border-radius: 4px; overflow: hidden; }
+.tac-col { padding: 12px; }
+.tac-col.left { background: var(--green-light); border-right: 1px solid var(--gray-border); }
+.tac-col.right { background: var(--red-light); }
+.tac-header { font-size: 11px; text-transform: uppercase; color: var(--text-secondary); margin-bottom: 8px; font-weight: 500; }
+.tac-row { display: flex; justify-content: space-between; padding: 4px 0; font-size: 12px; border-bottom: 1px dashed rgba(0,0,0,0.05); }
+.tac-row.total { font-weight: 600; border-bottom: none; padding-top: 8px; margin-top: 4px; border-top: 1px solid rgba(0,0,0,0.1); }
+.note { font-size: 11px; color: var(--text-secondary); font-style: italic; padding: 8px 12px; background: var(--gray-light); border-radius: 4px; margin-top: 8px; }
+.gauge { width: 100%; height: 60px; background: var(--gray-light); border-radius: 30px; position: relative; overflow: hidden; }
+.gauge-fill { height: 100%; border-radius: 30px; transition: width 0.4s; display: flex; align-items: center; justify-content: flex-end; padding-right: 12px; color: white; font-weight: 500; }
+.spark { width: 60px; height: 24px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-icon">A</div>
+    <span>Tax Dashboard Alegra</span>
+    <span class="tag">MOCKUP — VALIDACIÓN CFO</span>
+  </div>
+  <div class="header-meta">
+    <span>📅 Última actualización: 6 may 2026, 06:00 (auto)</span>
+    <span>•</span>
+    <span>🔄 Próximo refresh: 7 may 06:00</span>
+  </div>
+</header>
+
+<div class="mockup-banner">
+  ⚠️ MOCKUP — Datos ilustrativos para validación de diseño con CFO. La operación real arranca con cierre 2025 cargado como baseline + 2026 en curso.
+</div>
+
+<div class="filter-bar">
+  <div class="filter">
+    <label>Año / Periodo</label>
+    <select><option>2026 YTD (Ene–Abr)</option><option>2025 (full year)</option><option>Q1 2026</option><option>Mes en curso</option></select>
+  </div>
+  <div class="filter">
+    <label>País</label>
+    <select><option>Todos</option><option>Colombia</option><option>México</option><option>Argentina</option><option>R. Dominicana</option><option>Costa Rica</option><option>Panamá</option><option>Perú</option><option>España</option><option>USA</option><option>Canadá</option><option>UK</option></select>
+  </div>
+  <div class="filter">
+    <label>Sociedad</label>
+    <select><option>Operativas (excl. holdings)</option><option>Todas las 13</option><option>Solo holdings</option></select>
+  </div>
+  <div class="filter">
+    <label>Naturaleza</label>
+    <select><option>Todas</option><option>Directos</option><option>Indirectos</option><option>Income Tax (estricto)</option></select>
+  </div>
+  <div class="filter">
+    <label>Comparativo YoY</label>
+    <select><option>2025 vs 2026 ✓</option><option>Solo 2026</option></select>
+  </div>
+  <div class="filter">
+    <label>Moneda</label>
+    <select><option>USD (funcional)</option><option>Local</option></select>
+  </div>
+  <div style="margin-left: auto;">
+    <button class="btn">⤓ Exportar PDF</button>
+  </div>
+</div>
+
+<nav class="tabs">
+  <div class="tab active" onclick="showTab(event, 'cockpit')">Cockpit Ejecutivo <span class="tier-icon tier-public">●</span></div>
+  <div class="tab" onclick="showTab(event, 'pais')">Vista por País <span class="tier-icon tier-public">●</span></div>
+  <div class="tab" onclick="showTab(event, 'calendario')">Calendario y Cumplimiento <span class="tier-icon tier-restricted">●</span></div>
+  <div class="tab" onclick="showTab(event, 'saldos')">Saldos a Favor <span class="tier-icon tier-restricted">●</span></div>
+  <div class="tab" onclick="showTab(event, 'nol')">NOL Tracker <span class="tier-icon tier-restricted">●</span></div>
+  <div class="tab" onclick="showTab(event, 'contingencias')">Riesgos y Contingencias <span class="tier-icon tier-confidential">●</span></div>
+  <div class="tab" onclick="showTab(event, 'cashflow')">Tax Cash Flow <span class="tier-icon tier-restricted">●</span></div>
+  <div class="tab" onclick="showTab(event, 'renta')">Tax Return / Renta <span class="tier-icon tier-restricted">●</span></div>
+</nav>
+
+<main>
+
+<!-- ========== COCKPIT ========== -->
+<section class="page active" id="cockpit">
+
+  <div class="grid grid-5">
+    <div class="card">
+      <div class="card-title">ETR Consolidada <span style="font-weight: 400; text-transform: none;">(operativas)</span></div>
+      <div class="kpi-value">24.1<span class="kpi-unit">%</span></div>
+      <div class="card-subtitle">Tarifa nominal promedio: 28.6%</div>
+      <div class="kpi-comparison">
+        <span class="kpi-prev-label">2025:</span>
+        <span class="kpi-prev">22.8%</span>
+        <span class="kpi-delta delta-up-bad">▲ +1.3 pp</span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Cash Tax Rate <span style="font-weight: 400; text-transform: none;">(income tax estricto)</span></div>
+      <div class="kpi-value">19.7<span class="kpi-unit">%</span></div>
+      <div class="card-subtitle">Definición Riverwood</div>
+      <div class="kpi-comparison">
+        <span class="kpi-prev-label">2025:</span>
+        <span class="kpi-prev">18.5%</span>
+        <span class="kpi-delta delta-up-bad">▲ +1.2 pp</span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Pagados YTD</div>
+      <div class="kpi-value">162.4<span class="kpi-unit">K USD</span></div>
+      <div class="card-subtitle">Ene–Abr 2026</div>
+      <div class="kpi-comparison">
+        <span class="kpi-prev-label">2025 mismo corte:</span>
+        <span class="kpi-prev">155.1K</span>
+        <span class="kpi-delta delta-up-bad">▲ +4.7%</span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Provisionados YTD</div>
+      <div class="kpi-value">48.5<span class="kpi-unit">K USD</span></div>
+      <div class="card-subtitle">Provisión activa, no pagada</div>
+      <div class="kpi-comparison">
+        <span class="kpi-prev-label">2025 mismo corte:</span>
+        <span class="kpi-prev">47.1K</span>
+        <span class="kpi-delta delta-up-bad">▲ +2.9%</span>
+      </div>
+    </div>
+    <div class="card" style="border-left: 4px solid var(--orange);">
+      <div class="card-title">Saldos a Favor <span style="color: var(--orange);">⚠</span></div>
+      <div class="kpi-value">32.2<span class="kpi-unit">K USD</span></div>
+      <div class="card-subtitle">Costo implícito anual: <strong>4.3K USD</strong></div>
+      <div class="kpi-comparison">
+        <span class="kpi-prev-label">31-dic-2025:</span>
+        <span class="kpi-prev">28.5K</span>
+        <span class="kpi-delta delta-up-bad">▲ +12.8%</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid grid-2-1">
+    <div class="card">
+      <div class="card-title">ETR vs Utilidad Antes de Impuestos — Mensual</div>
+      <div class="chart-wrap"><canvas id="chart-etr-uai"></canvas></div>
+      <div class="legend" style="margin-top: 12px; justify-content: center;">
+        <span><span class="legend-dot" style="background: var(--gray);"></span>UAI 2025</span>
+        <span><span class="legend-dot" style="background: var(--primary);"></span>UAI 2026</span>
+        <span><span class="legend-dot" style="background: #E8AB04;"></span>ETR 2025</span>
+        <span><span class="legend-dot" style="background: var(--orange);"></span>ETR 2026</span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Top 5 impuestos del grupo (2026 YTD)</div>
+      <div class="chart-wrap"><canvas id="chart-top5"></canvas></div>
+    </div>
+  </div>
+
+  <div class="grid grid-2">
+    <div class="card">
+      <div class="card-title">Carga fiscal por país — comparativo 2025 vs 2026 YTD (USD)</div>
+      <div class="chart-wrap tall"><canvas id="chart-pais"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Distribución por sociedad y naturaleza</div>
+      <div class="chart-wrap tall"><canvas id="chart-sociedad"></canvas></div>
+    </div>
+  </div>
+
+  <div class="grid grid-2">
+    <div class="card">
+      <div class="card-title">Mapa de calor — Carga fiscal por jurisdicción (2026 YTD)</div>
+      <div class="heatmap" style="margin-top: 12px;">
+        <div class="heatmap-cell" style="background: #1557B0; grid-column: span 4;"><span>🇨🇴 Colombia</span><span style="font-size: 16px; font-weight: 600;">86.5K</span></div>
+        <div class="heatmap-cell" style="background: #2670D1; grid-column: span 2;"><span>🇲🇽 México</span><span style="font-size: 14px; font-weight: 600;">21.2K</span></div>
+        <div class="heatmap-cell" style="background: #4286D8; grid-column: span 2;"><span>🇦🇷 Argentina</span><span style="font-size: 14px; font-weight: 600;">14.8K</span></div>
+        <div class="heatmap-cell" style="background: #5C97DD;"><span>🇪🇸 ES</span><span style="font-weight: 600;">11.7K</span></div>
+        <div class="heatmap-cell" style="background: #76A8E2;"><span>🇨🇦 CAN</span><span style="font-weight: 600;">9.2K</span></div>
+        <div class="heatmap-cell" style="background: #8BB4E5; grid-column: span 2;"><span>🇨🇷 Costa Rica</span><span style="font-size: 14px; font-weight: 600;">8.4K</span></div>
+        <div class="heatmap-cell" style="background: #A5C5EA;"><span>🇵🇪 Perú</span><span style="font-weight: 600;">6.3K</span></div>
+        <div class="heatmap-cell" style="background: #B5D0EE;"><span>🇩🇴 RD</span><span style="font-weight: 600;">5.1K</span></div>
+        <div class="heatmap-cell" style="background: #C5DAF1;"><span>🇵🇦 PAN</span><span style="font-weight: 600;">4.2K</span></div>
+        <div class="heatmap-cell" style="background: #D4E2F4;"><span>🇺🇸 USA</span><span style="font-weight: 600;">3.2K</span></div>
+        <div class="heatmap-cell" style="background: #E2EAF7;"><span>🇬🇧 UK</span><span style="font-weight: 600; color: #333;">1.9K</span></div>
+      </div>
+      <div class="note">El tamaño de cada celda es proporcional a la carga fiscal. La intensidad del color refleja el monto absoluto en USD.</div>
+    </div>
+    <div class="card">
+      <div class="card-title">Naturaleza del impuesto — Directos vs Indirectos</div>
+      <div class="chart-wrap"><canvas id="chart-naturaleza"></canvas></div>
+      <table style="margin-top: 12px;">
+        <tr><td><span class="legend-dot" style="background: var(--primary);"></span><strong>Directos</strong> (Renta, ISR, ICA, IIBB)</td><td class="num"><strong>126.7K</strong></td><td class="num">78%</td></tr>
+        <tr><td><span class="legend-dot" style="background: #5C97DD;"></span>Indirectos (IVA, ITBIS, ITBMS, IGV)</td><td class="num">35.7K</td><td class="num">22%</td></tr>
+      </table>
+    </div>
+  </div>
+
+</section>
+
+<!-- ========== VISTA POR PAÍS (Colombia ejemplo) ========== -->
+<section class="page" id="pais">
+
+  <div class="grid" style="grid-template-columns: 1fr; margin-bottom: 16px;">
+    <div class="card" style="background: linear-gradient(135deg, var(--primary-light), white);">
+      <div class="row-flex" style="justify-content: space-between;">
+        <div>
+          <div class="row-flex"><span class="country-flag">🇨🇴</span><h2 style="font-size: 20px; font-weight: 500;">Colombia — Vista consolidada</h2></div>
+          <div class="card-subtitle" style="margin-top: 6px;">3 sociedades activas: Alegra Holdings SAS, Soluciones Alegra SAS, Alero Global SAS</div>
+        </div>
+        <div style="text-align: right;">
+          <div class="card-subtitle">Tarifa nominal renta</div>
+          <div style="font-size: 24px; font-weight: 500;">35%</div>
+          <div class="card-subtitle">+ sobretasa cuando aplica · Art. 240 ET</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid grid-4">
+    <div class="card">
+      <div class="card-title">ETR país (operativas)</div>
+      <div class="kpi-value">26.4<span class="kpi-unit">%</span></div>
+      <div class="kpi-comparison">
+        <span class="kpi-prev-label">2025:</span><span class="kpi-prev">24.9%</span>
+        <span class="kpi-delta delta-up-bad">▲ +1.5 pp</span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Pagados YTD</div>
+      <div class="kpi-value">86.5<span class="kpi-unit">K USD</span></div>
+      <div class="kpi-comparison">
+        <span class="kpi-prev-label">2025:</span><span class="kpi-prev">82.1K</span>
+        <span class="kpi-delta delta-up-bad">▲ +5.4%</span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Saldos a Favor</div>
+      <div class="kpi-value">3.0<span class="kpi-unit">K USD</span></div>
+      <div class="card-subtitle"><span class="badge badge-orange">⚠ 1 caso a 75% del plazo legal</span></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Cumplimiento YTD</div>
+      <div class="kpi-value">95<span class="kpi-unit">%</span></div>
+      <div class="card-subtitle">2 obligaciones próximas</div>
+    </div>
+  </div>
+
+  <div class="section-title">Estado de cuenta por tipo de impuesto</div>
+
+  <div class="tab-group">
+    <div class="tab-pill active">Renta</div>
+    <div class="tab-pill">IVA</div>
+    <div class="tab-pill">Retefuente</div>
+    <div class="tab-pill">ICA</div>
+    <div class="tab-pill">Autorretención</div>
+    <div class="tab-pill">GMF (4×1000)</div>
+  </div>
+
+  <div class="grid grid-2-1">
+    <div class="card">
+      <div class="card-title">Estado de cuenta — Renta Colombia (2026 YTD)</div>
+      <div class="tac" style="margin-top: 12px;">
+        <div class="tac-col left">
+          <div class="tac-header">A FAVOR / DESCONTABLE</div>
+          <div class="tac-row"><span>Saldo a favor 2025 aplicado</span><span>USD 1,800</span></div>
+          <div class="tac-row"><span>Anticipos pagados Q1</span><span>USD 28,500</span></div>
+          <div class="tac-row"><span>Retenciones sufridas YTD</span><span>USD 12,400</span></div>
+          <div class="tac-row total"><span>Total a favor</span><span>USD 42,700</span></div>
+        </div>
+        <div class="tac-col right">
+          <div class="tac-header">A CARGO / CAUSADO</div>
+          <div class="tac-row"><span>Provisión renta YTD</span><span>USD 47,200</span></div>
+          <div class="tac-row"><span>Sobretasa (n/a)</span><span>—</span></div>
+          <div class="tac-row total"><span>Total a cargo</span><span>USD 47,200</span></div>
+        </div>
+      </div>
+      <div style="margin-top: 16px; padding: 12px; background: var(--orange-light); border-radius: 4px; display: flex; justify-content: space-between; align-items: center;">
+        <strong>Saldo neto proyectado al cierre: USD 4,500 a pagar</strong>
+        <span class="badge badge-orange">Vence: 15 abril 2027</span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Movimientos mensuales — IVA generado vs descontable</div>
+      <div class="chart-wrap"><canvas id="chart-iva-co"></canvas></div>
+    </div>
+  </div>
+
+  <div class="grid grid-1-2" style="margin-top: 16px;">
+    <div class="card">
+      <div class="card-title">ETR Colombia — comparativo</div>
+      <table>
+        <tr><td>2024 (real)</td><td class="num">23.1%</td></tr>
+        <tr><td>2025 (real)</td><td class="num">24.9%</td></tr>
+        <tr><td><strong>2026 YTD</strong></td><td class="num"><strong>26.4%</strong></td></tr>
+        <tr><td>Tarifa nominal</td><td class="num" style="color: var(--text-secondary);">35.0%</td></tr>
+        <tr><td>Diferencia</td><td class="num" style="color: var(--green);">-8.6 pp</td></tr>
+      </table>
+      <div class="note">Diferencia explicada por: deducciones permitidas (Art. 107 ET), descuentos tributarios, y aplicación de retenciones a favor.</div>
+    </div>
+    <div class="card">
+      <div class="card-title">Evolución mensual — Pagado vs Provisionado (USD, 2026)</div>
+      <div class="chart-wrap"><canvas id="chart-pago-prov-co"></canvas></div>
+    </div>
+  </div>
+
+</section>
+
+<!-- ========== CALENDARIO ========== -->
+<section class="page" id="calendario">
+
+  <div class="grid grid-4">
+    <div class="card">
+      <div class="card-title">Cumplimiento YTD grupo</div>
+      <div class="kpi-value">91<span class="kpi-unit">%</span></div>
+      <div class="kpi-comparison">
+        <span class="kpi-prev-label">2025:</span><span class="kpi-prev">89%</span>
+        <span class="kpi-delta delta-down-good">▲ +2 pp</span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Días promedio anticipación pago</div>
+      <div class="kpi-value">4.2<span class="kpi-unit">días</span></div>
+      <div class="card-subtitle">Objetivo: ≥3 días</div>
+      <div class="kpi-comparison">
+        <span class="kpi-prev-label">2025:</span><span class="kpi-prev">2.8 días</span>
+        <span class="kpi-delta delta-down-good">▲ +1.4d</span>
+      </div>
+    </div>
+    <div class="card" style="border-left: 4px solid var(--red);">
+      <div class="card-title"># pagos en zona roja (≤0 días)</div>
+      <div class="kpi-value" style="color: var(--red);">3</div>
+      <div class="card-subtitle">Objetivo: 0</div>
+    </div>
+    <div class="card">
+      <div class="card-title">Vencimientos próx. 30 días</div>
+      <div class="kpi-value">14</div>
+      <div class="card-subtitle">USD 38.7K en caja proyectada</div>
+    </div>
+  </div>
+
+  <div class="grid grid-2-1">
+    <div class="card">
+      <div class="card-title">Calendario fiscal — Próximos 60 días</div>
+      <table style="margin-top: 12px;">
+        <thead>
+          <tr><th>Estado</th><th>País</th><th>Sociedad</th><th>Obligación</th><th>Periodo</th><th>Vence</th><th class="num">Días</th><th>Responsable</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><span class="badge badge-orange"><span class="semaforo s-orange"></span>Crítico</span></td><td>🇩🇴 RD</td><td>Alanube SRL</td><td>ITBIS abril</td><td>2026-04</td><td>15-may-2026</td><td class="num">9</td><td>Contab. RD</td></tr>
+          <tr><td><span class="badge badge-orange"><span class="semaforo s-orange"></span>Crítico</span></td><td>🇨🇦 CAN</td><td>Alegra CAN LP</td><td>GST/HST Q1</td><td>Q1-2026</td><td>15-may-2026</td><td class="num">9</td><td>D. Franco</td></tr>
+          <tr><td><span class="badge badge-yellow"><span class="semaforo s-yellow"></span>Próximo</span></td><td>🇲🇽 MX</td><td>Alegra Contabilidad</td><td>DIOT abril</td><td>2026-04</td><td>17-may-2026</td><td class="num">11</td><td>Contab. MX</td></tr>
+          <tr><td><span class="badge badge-yellow"><span class="semaforo s-yellow"></span>Próximo</span></td><td>🇪🇸 ES</td><td>Alegra Soluciones SL</td><td>Modelo 303 — IVA T1</td><td>2026-T1</td><td>20-may-2026</td><td class="num">14</td><td>Contab. ES</td></tr>
+          <tr><td><span class="badge badge-yellow"><span class="semaforo s-yellow"></span>Próximo</span></td><td>🇦🇷 AR</td><td>Alanube SAU</td><td>Anticipo Ganancias mayo</td><td>2026-05</td><td>22-may-2026</td><td class="num">16</td><td>Contador AR</td></tr>
+          <tr><td><span class="badge badge-green"><span class="semaforo s-green"></span>En plazo</span></td><td>🇨🇴 CO</td><td>Soluciones Alegra SAS</td><td>IVA bimestre 2</td><td>2026-B2</td><td>02-jun-2026</td><td class="num">27</td><td>D. Franco</td></tr>
+          <tr><td><span class="badge badge-green"><span class="semaforo s-green"></span>En plazo</span></td><td>🇨🇴 CO</td><td>Soluciones Alegra SAS</td><td>Retención IVA bimestre 2</td><td>2026-B2</td><td>02-jun-2026</td><td class="num">27</td><td>D. Franco</td></tr>
+          <tr><td><span class="badge badge-green"><span class="semaforo s-green"></span>En plazo</span></td><td>🇲🇽 MX</td><td>Alegra Contabilidad</td><td>ISR mensual mayo</td><td>2026-05</td><td>17-jun-2026</td><td class="num">42</td><td>Contab. MX</td></tr>
+          <tr><td><span class="badge badge-green"><span class="semaforo s-green"></span>En plazo</span></td><td>🇨🇷 CR</td><td>Alanube SRL</td><td>D-104 IVA mayo</td><td>2026-05</td><td>15-jun-2026</td><td class="num">40</td><td>Contab. CR</td></tr>
+          <tr><td><span class="badge badge-green"><span class="semaforo s-green"></span>En plazo</span></td><td>🇵🇪 PE</td><td>Alanube SAC</td><td>PDT 621 mayo</td><td>2026-05</td><td>20-jun-2026</td><td class="num">45</td><td>Contab. PE</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="card">
+      <div class="card-title">Cumplimiento YTD por país</div>
+      <table style="margin-top: 12px;">
+        <tr><td>🇪🇸 España</td><td class="num">100%</td><td><div class="bar-mini"><div class="bar-mini-fill" style="width:100%; background: var(--green);"></div></div></td></tr>
+        <tr><td>🇨🇦 Canadá</td><td class="num">100%</td><td><div class="bar-mini"><div class="bar-mini-fill" style="width:100%; background: var(--green);"></div></div></td></tr>
+        <tr><td>🇲🇽 México</td><td class="num">98%</td><td><div class="bar-mini"><div class="bar-mini-fill" style="width:98%; background: var(--green);"></div></div></td></tr>
+        <tr><td>🇨🇷 Costa Rica</td><td class="num">97%</td><td><div class="bar-mini"><div class="bar-mini-fill" style="width:97%; background: var(--green);"></div></div></td></tr>
+        <tr><td>🇵🇦 Panamá</td><td class="num">96%</td><td><div class="bar-mini"><div class="bar-mini-fill" style="width:96%; background: var(--green);"></div></div></td></tr>
+        <tr><td>🇨🇴 Colombia</td><td class="num">95%</td><td><div class="bar-mini"><div class="bar-mini-fill" style="width:95%; background: var(--green);"></div></div></td></tr>
+        <tr><td>🇵🇪 Perú</td><td class="num">94%</td><td><div class="bar-mini"><div class="bar-mini-fill" style="width:94%; background: var(--green);"></div></div></td></tr>
+        <tr><td>🇦🇷 Argentina</td><td class="num" style="color: var(--orange); font-weight: 600;">72%</td><td><div class="bar-mini"><div class="bar-mini-fill" style="width:72%; background: var(--orange);"></div></div></td></tr>
+        <tr><td>🇩🇴 R. Dominicana</td><td class="num" style="color: var(--red); font-weight: 600;">68%</td><td><div class="bar-mini"><div class="bar-mini-fill" style="width:68%; background: var(--red);"></div></div></td></tr>
+      </table>
+      <div class="alert-card" style="margin-top: 16px;">
+        <div class="alert-title">⚠ AR y RD bajo umbral aceptable</div>
+        <div class="alert-body">Argentina (72%) y R. Dominicana (68%) concentran el riesgo de multas del grupo. Escalamiento sugerido al CFO.</div>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<!-- ========== SALDOS A FAVOR ========== -->
+<section class="page" id="saldos">
+
+  <div class="grid grid-4">
+    <div class="card">
+      <div class="card-title">Capital inmovilizado total</div>
+      <div class="kpi-value">32.2<span class="kpi-unit">K USD</span></div>
+      <div class="kpi-comparison"><span class="kpi-prev-label">31-dic-2025:</span><span class="kpi-prev">28.5K</span><span class="kpi-delta delta-up-bad">▲ +12.8%</span></div>
+    </div>
+    <div class="card" style="border-left: 4px solid var(--orange);">
+      <div class="card-title">Costo implícito anual</div>
+      <div class="kpi-value">4.3<span class="kpi-unit">K USD</span></div>
+      <div class="card-subtitle">Estimado a tasas de oportunidad por país</div>
+    </div>
+    <div class="card" style="border-left: 4px solid var(--red);">
+      <div class="card-title"># saldos en zona crítica (>75% plazo)</div>
+      <div class="kpi-value" style="color: var(--red);">2</div>
+      <div class="card-subtitle">Riesgo de prescripción legal</div>
+    </div>
+    <div class="card">
+      <div class="card-title">Antigüedad promedio</div>
+      <div class="kpi-value">498<span class="kpi-unit">días</span></div>
+      <div class="card-subtitle">Mediana: 461 días</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Detalle de saldos a favor — por sociedad, tipo y antigüedad</div>
+    <table style="margin-top: 12px;">
+      <thead>
+        <tr><th>País</th><th>Sociedad</th><th>Tipo</th><th class="num">Monto USD</th><th class="num">Antigüedad</th><th class="num">Plazo legal</th><th class="num">% consumido</th><th>Tramo</th><th>Estado</th><th>Owner</th></tr>
+      </thead>
+      <tbody>
+        <tr style="background: var(--red-light);">
+          <td>🇨🇴 CO</td><td>Soluciones Alegra SAS</td><td>Retefuente renta 2024</td>
+          <td class="num"><strong>3,038</strong></td><td class="num">736 d</td><td class="num">730 d</td>
+          <td class="num"><strong>100.8%</strong></td><td><span class="badge badge-red">⛔ Crítico</span></td>
+          <td>En trámite</td><td>D. Franco</td>
+        </tr>
+        <tr style="background: var(--orange-light);">
+          <td>🇦🇷 AR</td><td>Alanube SAU</td><td>IVA crédito fiscal</td>
+          <td class="num"><strong>9,660</strong></td><td class="num">568 d</td><td class="num">1825 d</td>
+          <td class="num">31.1%</td><td><span class="badge badge-yellow">🟡 Amarillo</span></td>
+          <td>Pendiente</td><td>Contador AR</td>
+        </tr>
+        <tr>
+          <td>🇲🇽 MX</td><td>Alegra Contabilidad</td><td>IVA enero 2025</td>
+          <td class="num"><strong>3,944</strong></td><td class="num">445 d</td><td class="num">1825 d</td>
+          <td class="num">24.4%</td><td><span class="badge badge-green">🟢 Verde</span></td>
+          <td>Pendiente</td><td>Contab. MX</td>
+        </tr>
+        <tr>
+          <td>🇵🇪 PE</td><td>Alanube SAC</td><td>IGV Q4 2024</td>
+          <td class="num"><strong>1,123</strong></td><td class="num">476 d</td><td class="num">1460 d</td>
+          <td class="num">32.6%</td><td><span class="badge badge-yellow">🟡 Amarillo</span></td>
+          <td>En trámite</td><td>Contab. PE</td>
+        </tr>
+        <tr>
+          <td>🇪🇸 ES</td><td>Alegra Soluciones SL</td><td>IVA modelo 303 T4</td>
+          <td class="num"><strong>9,982</strong></td><td class="num">456 d</td><td class="num">1460 d</td>
+          <td class="num">31.2%</td><td><span class="badge badge-yellow">🟡 Amarillo</span></td>
+          <td>Pendiente</td><td>Contab. ES</td>
+        </tr>
+        <tr>
+          <td>🇨🇷 CR</td><td>Alanube SRL (CR)</td><td>Renta 2023</td>
+          <td class="num"><strong>608</strong></td><td class="num">507 d</td><td class="num">1460 d</td>
+          <td class="num">34.7%</td><td><span class="badge badge-yellow">🟡 Amarillo</span></td>
+          <td>Pendiente</td><td>Contab. CR</td>
+        </tr>
+        <tr>
+          <td>🇩🇴 RD</td><td>Alanube SRL (RD)</td><td>ITBIS Q3 2025</td>
+          <td class="num"><strong>3,825</strong></td><td class="num">218 d</td><td class="num">1095 d</td>
+          <td class="num">19.9%</td><td><span class="badge badge-green">🟢 Verde</span></td>
+          <td>Pendiente</td><td>Contab. RD</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="alert-card" style="margin-top: 16px;">
+      <div class="alert-title">⛔ Acción inmediata — Saldo CO en zona crítica</div>
+      <div class="alert-body">El saldo a favor de retefuente de Soluciones Alegra SAS (Art. 854 ET, 2 años) ha consumido el 100.8% del plazo legal. Verificar formalmente con DIAN el estado de la solicitud de compensación. Si no hay radicación válida, provisionar pérdida.</div>
+    </div>
+  </div>
+
+</section>
+
+<!-- ========== NOL TRACKER ========== -->
+<section class="page" id="nol">
+
+  <div class="grid grid-4">
+    <div class="card" style="border-left: 4px solid var(--green);">
+      <div class="card-title">Activos tributarios diferidos por NOL</div>
+      <div class="kpi-value">1.21<span class="kpi-unit">M USD</span></div>
+      <div class="card-subtitle">Beneficio fiscal potencial</div>
+    </div>
+    <div class="card">
+      <div class="card-title">Pérdida fiscal acumulada</div>
+      <div class="kpi-value">3.47<span class="kpi-unit">M USD</span></div>
+      <div class="card-subtitle">A nivel grupo, todas las jurisdicciones</div>
+    </div>
+    <div class="card">
+      <div class="card-title">% utilización proyectada 2026</div>
+      <div class="kpi-value">12<span class="kpi-unit">%</span></div>
+      <div class="card-subtitle">Sobre el saldo arrastrable</div>
+    </div>
+    <div class="card" style="border-left: 4px solid var(--orange);">
+      <div class="card-title">NOL próxima a prescribir (≤3 años)</div>
+      <div class="kpi-value" style="color: var(--orange);">0</div>
+      <div class="card-subtitle">Ninguna en zona crítica aún</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Pérdidas fiscales acumuladas — por sociedad y vencimiento</div>
+    <table style="margin-top: 12px;">
+      <thead>
+        <tr><th>Sociedad</th><th>País</th><th>Año origen</th><th class="num">Monto NOL (USD)</th><th>Régimen</th><th class="num">Tope %</th><th>Vence</th><th>Estado</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Alegra Holdings SAS</td><td>🇨🇴 CO</td><td>2024</td>
+          <td class="num"><strong>1,840,000</strong></td>
+          <td>12 años · Art. 147 ET</td>
+          <td class="num">25% renta líquida</td>
+          <td>2036</td>
+          <td><span class="badge badge-blue">Vigente</span></td>
+        </tr>
+        <tr>
+          <td>Alegra Holdings SAS</td><td>🇨🇴 CO</td><td>2025</td>
+          <td class="num"><strong>912,000</strong></td>
+          <td>12 años · Art. 147 ET</td>
+          <td class="num">25% renta líquida</td>
+          <td>2037</td>
+          <td><span class="badge badge-blue">Vigente</span></td>
+        </tr>
+        <tr>
+          <td>Alegra CAN LP</td><td>🇨🇦 CAN</td><td>2025</td>
+          <td class="num"><strong>336,000</strong></td>
+          <td>20 años · ITA s.111(1)</td>
+          <td class="num">100%</td>
+          <td>2045</td>
+          <td><span class="badge badge-blue">Vigente</span></td>
+        </tr>
+        <tr>
+          <td>Alegra Contabilidad SA de CV</td><td>🇲🇽 MX</td><td>2025</td>
+          <td class="num"><strong>375,000</strong></td>
+          <td>10 ejercicios · Art. 57 LISR</td>
+          <td class="num">100%</td>
+          <td>2035</td>
+          <td><span class="badge badge-blue">Vigente</span></td>
+        </tr>
+        <tr>
+          <td>Alanube SAC</td><td>🇵🇪 PE</td><td>2025</td>
+          <td class="num"><strong>54,800</strong></td>
+          <td>Sistema A · 4 años · Art. 50 LIR</td>
+          <td class="num">100% (4 años)</td>
+          <td>2029</td>
+          <td><span class="badge badge-yellow">Validar sistema</span></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="note">El "Beneficio fiscal potencial" se calcula multiplicando cada NOL por la tarifa nominal del país. Realizable solo en la medida en que la sociedad genere utilidad fiscal futura suficiente y dentro del plazo de prescripción del régimen.</div>
+  </div>
+
+  <div class="card" style="margin-top: 16px;">
+    <div class="card-title">Plazos de compensación de pérdidas — por país (referencia)</div>
+    <table style="margin-top: 12px;">
+      <thead><tr><th>País</th><th>Plazo</th><th>Tope porcentual</th><th>Base legal</th></tr></thead>
+      <tbody>
+        <tr><td>🇨🇴 Colombia</td><td>12 años</td><td>25% de la renta líquida</td><td>Art. 147 ET (Ley 1819/2016)</td></tr>
+        <tr><td>🇲🇽 México</td><td>10 ejercicios</td><td>Sin tope</td><td>Art. 57 LISR</td></tr>
+        <tr><td>🇦🇷 Argentina</td><td>5 años</td><td>Sin tope</td><td>Art. 25 LIG</td></tr>
+        <tr><td>🇩🇴 R. Dominicana</td><td>5 ejercicios</td><td>20% por año</td><td>Art. 287 CT</td></tr>
+        <tr><td>🇨🇷 Costa Rica</td><td>3 años (industria/agro)</td><td>—</td><td>Art. 8(g) LISR</td></tr>
+        <tr><td>🇵🇦 Panamá</td><td>5 años</td><td>20% anual / máx 50% utilidad</td><td>Art. 698-A CF</td></tr>
+        <tr><td>🇵🇪 Perú</td><td>Sistema A: 4 años / Sistema B: indefinido</td><td>A: 100% / B: 50% renta neta</td><td>Art. 50 LIR</td></tr>
+        <tr><td>🇪🇸 España</td><td>Indefinido</td><td>70% base imponible (60% si vol. > €60M)</td><td>Art. 26 LIS</td></tr>
+        <tr><td>🇺🇸 USA</td><td>Indefinido (post-TCJA)</td><td>80% taxable income</td><td>IRC §172</td></tr>
+        <tr><td>🇨🇦 Canadá</td><td>20 años forward / 3 años back</td><td>Sin tope</td><td>ITA s.111(1)</td></tr>
+        <tr><td>🇬🇧 Reino Unido</td><td>Indefinido (post-2017)</td><td>50% si > £5M</td><td>CTA 2010 Pt.4</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</section>
+
+<!-- ========== CONTINGENCIAS ========== -->
+<section class="page" id="contingencias">
+
+  <div class="alert-card" style="background: var(--red-light); border-left-color: var(--red);">
+    <div class="alert-title">🔴 Página confidencial — acceso restringido a CFO + Legal + Comité de Auditoría</div>
+    <div class="alert-body">Esta vista contiene posiciones gris, auditorías abiertas y exposiciones legales. No compartir externamente.</div>
+  </div>
+
+  <div class="grid grid-4">
+    <div class="card">
+      <div class="card-title">Exposición total bruta</div>
+      <div class="kpi-value">620<span class="kpi-unit">K USD</span></div>
+      <div class="card-subtitle">Suma de montos expuestos sin ponderar</div>
+    </div>
+    <div class="card">
+      <div class="card-title">Exposición ponderada</div>
+      <div class="kpi-value">342<span class="kpi-unit">K USD</span></div>
+      <div class="card-subtitle">Por probabilidad estimada</div>
+    </div>
+    <div class="card">
+      <div class="card-title">Provisionado</div>
+      <div class="kpi-value">159<span class="kpi-unit">K USD</span></div>
+      <div class="card-subtitle">Reflejado en P&L</div>
+    </div>
+    <div class="card" style="border-left: 4px solid var(--red);">
+      <div class="card-title">Gap NO provisionado</div>
+      <div class="kpi-value" style="color: var(--red);">183<span class="kpi-unit">K USD</span></div>
+      <div class="card-subtitle">Riesgo abierto</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Auditorías abiertas y posiciones grises</div>
+    <table style="margin-top: 12px;">
+      <thead>
+        <tr><th>País</th><th>Sociedad</th><th>Tipo</th><th>Descripción</th><th>Año</th><th class="num">Expuesto USD</th><th>Probabilidad</th><th class="num">Ponderado USD</th><th class="num">Provisionado</th><th class="num">Gap</th><th>Estado</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>🇨🇴 CO</td><td>Soluciones Alegra SAS</td><td>Requerimiento DIAN</td><td>DIAN cuestiona deducibilidad gastos 2022</td><td>2022</td><td class="num">180,000</td><td><span class="badge badge-red">Alta &gt;70%</span></td><td class="num">135,000</td><td class="num">120,000</td><td class="num" style="color: var(--orange);">15,000</td><td><span class="badge badge-orange">En discusión</span></td></tr>
+        <tr style="background: var(--red-light);"><td>🇦🇷 AR</td><td>Alanube SAU</td><td>Auditoría AFIP</td><td>Revisión IVA 2021–2022</td><td>2021-22</td><td class="num">95,000</td><td><span class="badge badge-yellow">Media 30-70%</span></td><td class="num">47,500</td><td class="num">0</td><td class="num" style="color: var(--red); font-weight: 600;">47,500</td><td><span class="badge badge-red">Auditoría abierta</span></td></tr>
+        <tr><td>🇲🇽 MX</td><td>Alegra Contabilidad</td><td>Posición gris ISR</td><td>Deducción pagos al extranjero Art.28 LIS</td><td>2023</td><td class="num">62,000</td><td><span class="badge badge-yellow">Media</span></td><td class="num">24,800</td><td class="num">18,000</td><td class="num" style="color: var(--orange);">6,800</td><td><span class="badge badge-blue">Monitoreo</span></td></tr>
+        <tr><td>🇪🇸 ES</td><td>Alegra Soluciones SL</td><td>Precios de transferencia</td><td>Margen intercompany cuestionado</td><td>2022-23</td><td class="num">45,000</td><td><span class="badge badge-green">Baja &lt;30%</span></td><td class="num">9,000</td><td class="num">0</td><td class="num">9,000</td><td><span class="badge badge-blue">Monitoreo</span></td></tr>
+        <tr><td>🇨🇷 CR</td><td>Alanube SRL</td><td>Requerimiento Hacienda</td><td>Gastos no deducibles identificados</td><td>2023</td><td class="num">28,000</td><td><span class="badge badge-red">Alta</span></td><td class="num">21,000</td><td class="num">21,000</td><td class="num">0</td><td><span class="badge badge-orange">En discusión</span></td></tr>
+        <tr style="background: var(--red-light);"><td>🇨🇦 CAN</td><td>Alegra CAN LP</td><td>Riesgo establecimiento permanente</td><td>Análisis post-migración contratistas</td><td>2024</td><td class="num">210,000</td><td><span class="badge badge-yellow">Media</span></td><td class="num">105,000</td><td class="num">0</td><td class="num" style="color: var(--red); font-weight: 600;">105,000</td><td><span class="badge badge-red">Análisis legal</span></td></tr>
+      </tbody>
+    </table>
+    <div class="alert-card" style="margin-top: 16px;">
+      <div class="alert-title">⚠ Dos contingencias materiales sin provisionar</div>
+      <div class="alert-body">AR (auditoría AFIP, USD 47.5K ponderado) y CAN (riesgo PE, USD 105K ponderado) representan el 83% del gap no provisionado del grupo. Decisión: provisionar antes del cierre Q2-2026 o asumir explícitamente como riesgo abierto en notas a EEFF.</div>
+    </div>
+  </div>
+
+</section>
+
+<!-- ========== CASH FLOW ========== -->
+<section class="page" id="cashflow">
+
+  <div class="grid grid-4">
+    <div class="card">
+      <div class="card-title">Forecast caja tributaria — próximos 6 meses</div>
+      <div class="kpi-value">239<span class="kpi-unit">K USD</span></div>
+      <div class="card-subtitle">Obligatorios + contingentes ponderados</div>
+    </div>
+    <div class="card">
+      <div class="card-title">Obligatorios (100%)</div>
+      <div class="kpi-value">149<span class="kpi-unit">K USD</span></div>
+      <div class="card-subtitle">Vencimientos legales fijos</div>
+    </div>
+    <div class="card">
+      <div class="card-title">Contingentes (ponderados)</div>
+      <div class="kpi-value">90<span class="kpi-unit">K USD</span></div>
+      <div class="card-subtitle">Sujeto a fallo o decisión</div>
+    </div>
+    <div class="card">
+      <div class="card-title">Concentración en mes pico</div>
+      <div class="kpi-value">42<span class="kpi-unit">K USD</span></div>
+      <div class="card-subtitle">Junio 2026 — alistar caja</div>
+    </div>
+  </div>
+
+  <div class="grid grid-2-1">
+    <div class="card">
+      <div class="card-title">Salidas de caja proyectadas — mes a mes</div>
+      <div class="chart-wrap"><canvas id="chart-cashflow"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Top 5 obligaciones por monto</div>
+      <table style="margin-top: 12px;">
+        <tr><td>🇨🇴 CO · Renta 2024 saldo</td><td class="num"><strong>10.3K</strong></td></tr>
+        <tr><td>🇨🇦 CAN · GST/HST Q1</td><td class="num"><strong>9.7K</strong></td></tr>
+        <tr><td>🇪🇸 ES · IVA T1</td><td class="num"><strong>19.5K</strong></td></tr>
+        <tr><td>🇲🇽 MX · ISR abril</td><td class="num"><strong>4.3K</strong></td></tr>
+        <tr><td>🇨🇴 CO · Anticipo renta Q2</td><td class="num"><strong>4.4K</strong></td></tr>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ========== TAX RETURN ========== -->
+<section class="page" id="renta">
+
+  <div class="grid grid-3">
+    <div class="card">
+      <div class="card-title">Año fiscal seleccionado</div>
+      <div class="kpi-value">2025<span class="kpi-unit small">cierre</span></div>
+      <div class="card-subtitle">Soluciones Alegra SAS · Colombia</div>
+    </div>
+    <div class="card">
+      <div class="card-title">Saldo final declaración renta</div>
+      <div class="kpi-value">10.3<span class="kpi-unit">K USD a pagar</span></div>
+      <div class="card-subtitle">Vence: 15 abril 2026</div>
+    </div>
+    <div class="card">
+      <div class="card-title">ETR efectiva 2025</div>
+      <div class="kpi-value">24.9<span class="kpi-unit">%</span></div>
+      <div class="card-subtitle">vs tarifa nominal 35%</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Depuración fiscal — Soluciones Alegra SAS · año gravable 2025</div>
+
+    <div style="margin-top: 16px;">
+
+      <div class="waterfall-row">
+        <div>Utilidad contable antes de impuestos</div>
+        <div class="num"><strong>+335.6K</strong></div>
+        <div><div class="wf-bar neutral" style="width: 80%;"></div></div>
+        <div class="num">335,600</div>
+      </div>
+
+      <div class="waterfall-row" style="color: var(--red);">
+        <div>(+) Gastos no deducibles (sanciones, donaciones excedentes)</div>
+        <div class="num">+18.2K</div>
+        <div><div class="wf-bar negative" style="width: 8%;"></div></div>
+        <div class="num">18,200</div>
+      </div>
+
+      <div class="waterfall-row" style="color: var(--green);">
+        <div>(–) Ingresos no constitutivos de renta</div>
+        <div class="num">–4.8K</div>
+        <div><div class="wf-bar positive" style="width: 3%;"></div></div>
+        <div class="num">-4,800</div>
+      </div>
+
+      <div class="waterfall-row" style="color: var(--red);">
+        <div>(±) Diferencias temporales (provisiones, depreciaciones)</div>
+        <div class="num">+12.4K</div>
+        <div><div class="wf-bar negative" style="width: 5%;"></div></div>
+        <div class="num">12,400</div>
+      </div>
+
+      <div class="waterfall-row" style="font-weight: 600; background: var(--gray-light); padding: 12px 8px; border-radius: 4px;">
+        <div>= Renta líquida gravable</div>
+        <div class="num">361.4K</div>
+        <div><div class="wf-bar subtotal" style="width: 86%;"></div></div>
+        <div class="num">361,400</div>
+      </div>
+
+      <div class="waterfall-row" style="color: var(--red);">
+        <div>(×) Tarifa nominal renta · 35%</div>
+        <div class="num">126.5K</div>
+        <div><div class="wf-bar negative" style="width: 30%;"></div></div>
+        <div class="num">126,490</div>
+      </div>
+
+      <div class="waterfall-row" style="font-weight: 600;">
+        <div>= Impuesto causado</div>
+        <div class="num">126.5K</div>
+        <div><div class="wf-bar subtotal" style="width: 30%;"></div></div>
+        <div class="num">126,490</div>
+      </div>
+
+      <div class="waterfall-row" style="color: var(--green);">
+        <div>(–) Anticipos pagados YTD</div>
+        <div class="num">–87.6K</div>
+        <div><div class="wf-bar positive" style="width: 21%;"></div></div>
+        <div class="num">-87,600</div>
+      </div>
+
+      <div class="waterfall-row" style="color: var(--green);">
+        <div>(–) Retenciones en la fuente sufridas</div>
+        <div class="num">–28.6K</div>
+        <div><div class="wf-bar positive" style="width: 7%;"></div></div>
+        <div class="num">-28,560</div>
+      </div>
+
+      <div class="waterfall-row" style="color: var(--green);">
+        <div>(–) Saldo a favor 2024 aplicado</div>
+        <div class="num">–0K</div>
+        <div><div class="wf-bar positive" style="width: 0%;"></div></div>
+        <div class="num">0</div>
+      </div>
+
+      <div class="waterfall-row" style="color: var(--green);">
+        <div>(–) Descuentos tributarios</div>
+        <div class="num">–0K</div>
+        <div><div class="wf-bar positive" style="width: 0%;"></div></div>
+        <div class="num">0</div>
+      </div>
+
+      <div class="waterfall-row" style="font-weight: 700; background: var(--orange-light); padding: 14px 8px; border-radius: 4px; font-size: 14px;">
+        <div>SALDO A PAGAR EN DECLARACIÓN</div>
+        <div class="num">10.3K</div>
+        <div><div class="wf-bar" style="width: 4%; background: var(--orange);"></div></div>
+        <div class="num">10,330</div>
+      </div>
+
+    </div>
+    <div class="note" style="margin-top: 16px;">📎 Adjunto: papeles de trabajo en `/Tax Dashboard/Papeles_2025/CO-02_Soluciones_Alegra_Renta.xlsx`. Cada partida tiene su soporte normativo y documental enlazado.</div>
+  </div>
+
+  <div class="card" style="margin-top: 16px;">
+    <div class="card-title">Histórico de declaraciones de renta — Soluciones Alegra SAS</div>
+    <table style="margin-top: 12px;">
+      <thead><tr><th>Año</th><th class="num">UAI Contable</th><th class="num">Renta Líquida</th><th class="num">Impuesto Causado</th><th class="num">Anticipos+Retenciones</th><th class="num">Saldo Final</th><th class="num">ETR</th></tr></thead>
+      <tbody>
+        <tr><td>2023</td><td class="num">298,400</td><td class="num">312,200</td><td class="num">109,270</td><td class="num">96,400</td><td class="num">12,870 a pagar</td><td class="num">36.6%</td></tr>
+        <tr><td>2024</td><td class="num">312,800</td><td class="num">328,900</td><td class="num">115,115</td><td class="num">102,800</td><td class="num">12,315 a pagar</td><td class="num">36.8%</td></tr>
+        <tr style="background: var(--primary-light); font-weight: 600;"><td>2025</td><td class="num">335,600</td><td class="num">361,400</td><td class="num">126,490</td><td class="num">116,160</td><td class="num">10,330 a pagar</td><td class="num">35.0%</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</section>
+
+</main>
+
+<footer style="padding: 24px; text-align: center; color: var(--text-secondary); font-size: 11px; border-top: 1px solid var(--gray-border); margin-top: 32px;">
+  Mockup de diseño — Tax Dashboard Alegra<br>
+  Stack productivo: Google Sheets (datos) + Apps Script (lógica/automatización) + Looker Studio (visualización)<br>
+  Audiencia tier 🟢 pública interna · 🟠 restringida · 🔴 confidencial
+</footer>
+
+<script>
+function showTab(e, id) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  e.currentTarget.classList.add('active');
+  document.getElementById(id).classList.add('active');
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  const months = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+  const monthsYTD = ['Ene','Feb','Mar','Abr'];
+
+  // ETR vs UAI
+  new Chart(document.getElementById('chart-etr-uai'), {
+    type: 'bar',
+    data: {
+      labels: months,
+      datasets: [
+        { type: 'bar', label: 'UAI 2025', data: [37.6,-37.4,41.3,107.0,9.9,-523.4,-425.3,-316.7,-187.3,-131.1,-22.1,2914.5], backgroundColor: '#DADCE0', yAxisID: 'y' },
+        { type: 'bar', label: 'UAI 2026', data: [42.1,12.8,38.6,98.2,null,null,null,null,null,null,null,null], backgroundColor: '#1A73E8', yAxisID: 'y' },
+        { type: 'line', label: 'ETR 2025', data: [21.4,22.1,22.8,23.0,22.5,22.1,21.9,21.6,22.0,22.4,22.5,22.8], borderColor: '#E8AB04', backgroundColor: 'transparent', tension: 0.3, yAxisID: 'y1', borderWidth: 2 },
+        { type: 'line', label: 'ETR 2026', data: [23.1,23.6,24.0,24.1,null,null,null,null,null,null,null,null], borderColor: '#FA7B17', backgroundColor: 'transparent', tension: 0.3, yAxisID: 'y1', borderWidth: 2.5 }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        y: { title: { display: true, text: 'UAI (USD K)' }, ticks: { font: { size: 10 } } },
+        y1: { position: 'right', title: { display: true, text: 'ETR (%)' }, grid: { drawOnChartArea: false }, min: 18, max: 30, ticks: { callback: v => v + '%', font: { size: 10 } } },
+        x: { ticks: { font: { size: 11 } } }
+      }
+    }
+  });
+
+  // Top 5 impuestos
+  new Chart(document.getElementById('chart-top5'), {
+    type: 'bar',
+    data: {
+      labels: ['Renta CO','ISR MX','ICA CO','Ganancias AR','Renta CR'],
+      datasets: [
+        { label: '2025 YTD', data: [62.1, 19.8, 17.2, 11.8, 7.9], backgroundColor: '#DADCE0' },
+        { label: '2026 YTD', data: [64.5, 21.2, 18.2, 12.4, 8.4], backgroundColor: '#1A73E8' }
+      ]
+    },
+    options: {
+      indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { position: 'bottom', labels: { font: { size: 11 }, boxWidth: 12 } } },
+      scales: { x: { title: { display: true, text: 'USD K' }, ticks: { font: { size: 10 } } }, y: { ticks: { font: { size: 11 } } } }
+    }
+  });
+
+  // Carga por país comparativa
+  new Chart(document.getElementById('chart-pais'), {
+    type: 'bar',
+    data: {
+      labels: ['CO','MX','AR','ES','CAN','CR','PE','RD','PAN','USA','UK'],
+      datasets: [
+        { label: '2025 YTD', data: [82.1, 19.8, 13.5, 11.0, 8.6, 7.9, 6.0, 4.7, 4.0, 2.9, 1.7], backgroundColor: '#DADCE0' },
+        { label: '2026 YTD', data: [86.5, 21.2, 14.8, 11.7, 9.2, 8.4, 6.3, 5.1, 4.2, 3.2, 1.9], backgroundColor: '#1A73E8' }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { position: 'bottom', labels: { font: { size: 11 }, boxWidth: 12 } } },
+      scales: { y: { title: { display: true, text: 'USD K' }, ticks: { font: { size: 10 } } } }
+    }
+  });
+
+  // Por sociedad
+  new Chart(document.getElementById('chart-sociedad'), {
+    type: 'bar',
+    data: {
+      labels: ['Sol. Alegra SAS', 'Alero Global SAS', 'Alegra Holdings', 'Alegra MX', 'Alanube AR', 'Alegra ES', 'Alegra CAN', 'Alanube CR', 'Alanube PE', 'Alanube RD', 'Alanube PAN', 'Alegra USA', 'Six Green UK'],
+      datasets: [
+        { label: 'Directos', data: [62.5, 18.4, 1.3, 17.1, 12.0, 8.6, 6.5, 6.1, 4.6, 3.7, 3.1, 2.4, 1.4], backgroundColor: '#1A73E8', stack: 's' },
+        { label: 'Indirectos', data: [16.8, 4.2, 0, 4.1, 2.8, 3.1, 2.7, 2.3, 1.7, 1.4, 1.1, 0.8, 0.5], backgroundColor: '#76A8E2', stack: 's' }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { position: 'bottom', labels: { font: { size: 11 }, boxWidth: 12 } } },
+      scales: {
+        x: { stacked: true, ticks: { font: { size: 9 }, maxRotation: 60, minRotation: 45 } },
+        y: { stacked: true, title: { display: true, text: 'USD K' }, ticks: { font: { size: 10 } } }
+      }
+    }
+  });
+
+  // Naturaleza donut
+  new Chart(document.getElementById('chart-naturaleza'), {
+    type: 'doughnut',
+    data: {
+      labels: ['Directos', 'Indirectos'],
+      datasets: [{ data: [126.7, 35.7], backgroundColor: ['#1A73E8', '#5C97DD'], borderWidth: 0 }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false, cutout: '65%',
+      plugins: { legend: { display: false } }
+    }
+  });
+
+  // IVA Colombia
+  if (document.getElementById('chart-iva-co')) {
+    new Chart(document.getElementById('chart-iva-co'), {
+      type: 'bar',
+      data: {
+        labels: monthsYTD,
+        datasets: [
+          { label: 'IVA Generado', data: [3.8, 4.1, 4.4, 4.6], backgroundColor: '#1A73E8' },
+          { label: 'IVA Descontable', data: [-2.6, -2.8, -3.0, -3.1], backgroundColor: '#EA4335' }
+        ]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { position: 'bottom', labels: { font: { size: 11 }, boxWidth: 12 } } },
+        scales: { y: { title: { display: true, text: 'USD K' }, ticks: { font: { size: 10 } } } }
+      }
+    });
+  }
+
+  if (document.getElementById('chart-pago-prov-co')) {
+    new Chart(document.getElementById('chart-pago-prov-co'), {
+      type: 'bar',
+      data: {
+        labels: monthsYTD,
+        datasets: [
+          { label: 'Pagado', data: [21.5, 22.1, 21.8, 21.1], backgroundColor: '#34A853' },
+          { label: 'Provisionado', data: [11.2, 12.0, 11.8, 12.4], backgroundColor: '#FA7B17' }
+        ]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { position: 'bottom', labels: { font: { size: 11 }, boxWidth: 12 } } },
+        scales: { y: { title: { display: true, text: 'USD K' }, ticks: { font: { size: 10 } } } }
+      }
+    });
+  }
+
+  if (document.getElementById('chart-cashflow')) {
+    new Chart(document.getElementById('chart-cashflow'), {
+      type: 'bar',
+      data: {
+        labels: ['May 26','Jun 26','Jul 26','Ago 26','Sep 26','Oct 26'],
+        datasets: [
+          { label: 'Obligatorios', data: [37.2, 28.5, 23.8, 21.4, 19.6, 18.7], backgroundColor: '#1A73E8', stack: 'a' },
+          { label: 'Contingentes (ponderado)', data: [4.8, 13.5, 18.2, 22.5, 16.4, 14.6], backgroundColor: '#FA7B17', stack: 'a' }
+        ]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { position: 'bottom', labels: { font: { size: 11 }, boxWidth: 12 } } },
+        scales: { x: { stacked: true }, y: { stacked: true, title: { display: true, text: 'USD K' } } }
+      }
+    });
+  }
+});
+</script>
+
+</body>
+</html>
